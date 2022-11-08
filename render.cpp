@@ -11,7 +11,7 @@ void render_t::init ( ) {
 
     /* create all fonts */
     for ( auto &font : fonts ) {
-		auto& font_data = font.second;
+        auto& font_data = font.second;
 
         font_data.m_data = interfaces.m_surface->create_font ( );
 
