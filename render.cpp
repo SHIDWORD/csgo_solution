@@ -16,7 +16,7 @@ void render_t::init ( ) {
         font_data.m_data = interfaces.m_surface->create_font ( );
 
         if ( font_data.m_data != 0 )
-			interfaces.m_surface->set_font_glyph_set ( font_data.m_data, font_data.m_name, font_data.m_height, font_data.m_weight, font_data.m_blur, 0, font_data.m_flags );
+            interfaces.m_surface->set_font_glyph_set ( font_data.m_data, font_data.m_name, font_data.m_height, font_data.m_weight, font_data.m_blur, 0, font_data.m_flags );
     }
 }
 
