@@ -5,4 +5,6 @@
 #include "entlist.h"
 #include "global_vars_base.h"
 #include "color.h"
+#include "localize.h"
+#include "convar.h"
 #include "surface.h"

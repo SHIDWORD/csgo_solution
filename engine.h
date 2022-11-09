@@ -56,9 +56,9 @@ public:
 		util::get_method< get_screen_size_fn > ( this, indices_t::_get_screen_size )( this, width, height );
 	}
 
-	void get_player_info ( int index, player_info_t *info ) {
-		using get_player_info_fn = void ( __thiscall * )( void *, int, player_info_t * );
-		util::get_method< get_player_info_fn > ( this, indices_t::_get_player_info )( this, index, info );
+	bool get_player_info ( int index, player_info_t *info ) {
+		using get_player_info_fn = bool ( __thiscall * )( void *, int, player_info_t * );
+		return util::get_method< get_player_info_fn > ( this, indices_t::_get_player_info )( this, index, info );
 	}
 
 	int get_local_player ( ) {

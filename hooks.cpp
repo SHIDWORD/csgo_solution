@@ -8,14 +8,17 @@ bool hooks_t::init ( ) {
 	if ( MH_Initialize ( ) != MH_OK )
 		throw std::runtime_error ( x_ ( "failed to initialize minhook." ) );
 
+	/* addresses. */
 	const auto _enginevgui_paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
 	const auto _chlclient_create_move = util::get_method < void * > ( interfaces.m_client, 22 );
 	const auto _chlclient_frame_stage_notify = util::get_method < void * > ( interfaces.m_client, 37 );
 
+	/* create detours. */
 	m_create_move_proxy.create ( _chlclient_create_move, create_move_proxy );
 	m_frame_stage_notify.create ( _chlclient_frame_stage_notify, frame_stage_notify );
 	m_paint.create ( _enginevgui_paint, paint );
 	
+	/* set wndproc */
 	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
 
 	if ( !m_old_wndproc )
@@ -68,7 +71,7 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
 		interfaces.m_surface->paint ( [ & ] {
 			visuals.paint ( );
-			render.string ( fonts [ fonts_t::hack_watermark ].m_data, 10, 10, { 255, 255, 255, 255 }, x_ ( "CSGO Base" ) );
+			//render.string ( fonts [ fonts_t::hack_watermark ].m_data, 10, 10, { 255, 255, 255, 255 }, x_ ( "CSGO Base" ) );
 		} );
 	}
 }

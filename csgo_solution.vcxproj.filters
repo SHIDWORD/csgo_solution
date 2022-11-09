@@ -114,6 +114,21 @@
     <ClInclude Include="visuals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="convar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="localize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyformat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry.cpp">
@@ -150,6 +165,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="visuals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

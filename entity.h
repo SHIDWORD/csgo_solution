@@ -29,11 +29,11 @@ public:
 
 class player_t : public entity_t {
 public:
-	NETVAR ( vec_t, mins, "DT_CSPlayer", "m_vecMins" );
-	NETVAR ( vec_t, maxs, "DT_CSPlayer", "m_vecMaxs" );
 	NETVAR ( int, health, "DT_BasePlayer", "m_iHealth" );
 	NETVAR ( life_states_t, life_state, "DT_BasePlayer", "m_lifeState" );
 	NETVAR ( int, tick_base, "DT_BasePlayer", "m_nTickBase" );
+	NETVAR_ADDITIVE ( vec_t, mins, "DT_BaseEntity", "m_Collision", 0x8 );
+	NETVAR_ADDITIVE ( vec_t, maxs, "DT_BaseEntity", "m_Collision", 0x14 );
 
 	__forceinline bool is_alive ( ) {
 		return ( life_state ( ) == life_states_t::alive ) && health ( ) > 0;

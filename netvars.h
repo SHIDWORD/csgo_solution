@@ -18,8 +18,14 @@ extern netvars_t netvars;
 
 #define NETVAR( t, func, table, prop ) \
 __forceinline t& func( ) { \
-	auto offset = netvar_data [ fnv1a::hash_const ( table ) ][ fnv1a::hash_const ( prop ) ].m_offset; \
+	auto offset = netvars.get_offset( HASH ( table ), HASH ( prop ) ); \
 	return *( t* )( std::uintptr_t( this ) + offset ); \
+}
+
+#define NETVAR_ADDITIVE( t, func, table, prop, off ) \
+__forceinline t& func( ) { \
+	auto offset = netvars.get_offset( HASH ( table ), HASH ( prop ) ); \
+	return *( t* )( ( std::uintptr_t( this ) + offset ) + off ); \
 }
 
 #define OFFSET( t, func, offset ) \

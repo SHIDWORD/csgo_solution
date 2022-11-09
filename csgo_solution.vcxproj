@@ -22,6 +22,7 @@
     <ClInclude Include="buffer.h" />
     <ClInclude Include="client.h" />
     <ClInclude Include="color.h" />
+    <ClInclude Include="convar.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entlist.h" />
@@ -38,6 +39,9 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="interfaces.h" />
     <ClInclude Include="lazy_importer.h" />
+    <ClInclude Include="localize.h" />
+    <ClInclude Include="logging.h" />
+    <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="minhook.h" />
     <ClInclude Include="netvars.h" />
@@ -46,6 +50,7 @@
     <ClInclude Include="render.h" />
     <ClInclude Include="sdk.h" />
     <ClInclude Include="surface.h" />
+    <ClInclude Include="tinyformat.h" />
     <ClInclude Include="trampoline.h" />
     <ClInclude Include="usercmd.h" />
     <ClInclude Include="vector.h" />
@@ -62,6 +67,8 @@
     <ClCompile Include="hook.c" />
     <ClCompile Include="hooks.cpp" />
     <ClCompile Include="interfaces.cpp" />
+    <ClCompile Include="logging.cpp" />
+    <ClCompile Include="math.cpp" />
     <ClCompile Include="netvars.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="trampoline.c" />

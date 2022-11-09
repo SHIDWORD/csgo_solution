@@ -12,10 +12,12 @@ __forceinline t create_interface ( const char *module_name, const char *name ) {
 
 bool interfaces_t::init ( ) {
 	/* create interfaces. */
-	m_engine  = create_interface< c_engine * > ( x_ ( "engine.dll" ), x_ ( "VEngineClient014" ) );
-	m_surface = create_interface< c_surface * > ( x_ ( "vguimatsurface.dll" ), x_ ( "VGUI_Surface031" ) );
-	m_client  = create_interface< c_client * > ( x_ ( "client.dll" ), x_ ( "VClient018" ) );
-	m_entlist = create_interface< c_entlist * > ( x_ ( "client.dll" ), x_ ( "VClientEntityList003" ) );
+	m_engine   = create_interface< c_engine * > ( x_ ( "engine.dll" ), x_ ( "VEngineClient014" ) );
+	m_surface  = create_interface< c_surface * > ( x_ ( "vguimatsurface.dll" ), x_ ( "VGUI_Surface031" ) );
+	m_localize = create_interface< c_localize * > ( x_ ( "localize.dll" ), x_ ( "Localize_001" ) );
+	m_client   = create_interface< c_client * > ( x_ ( "client.dll" ), x_ ( "VClient018" ) );
+	m_entlist  = create_interface< c_entlist * > ( x_ ( "client.dll" ), x_ ( "VClientEntityList003" ) );
+	m_cvar	   = create_interface< c_convar * > ( x_ ( "vstdlib.dll" ), x_ ( "VEngineCvar007" ) );
 
 	/* get addresses. */
 	m_input   = pattern::find ( x_ ( "client.dll" ), x_ ( "B9 ? ? ? ? FF 60 60" ) ).add ( 1 ).deref ( ).as< c_input * > ( );

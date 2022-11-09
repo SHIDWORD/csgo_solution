@@ -16,4 +16,4 @@ namespace hash {
 
 using fnv1a = hash::fnv1a < hash32_t >;
 
-#define HASH( x ) fnv1a::hash_const( x );
+#define HASH( x ) fnv1a::hash_const ( x )
