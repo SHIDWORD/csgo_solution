@@ -67,6 +67,7 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 
 	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
 		interfaces.m_surface->paint ( [ & ] {
+			visuals.paint ( );
 			render.string ( fonts [ fonts_t::hack_watermark ].m_data, 10, 10, { 255, 255, 255, 255 }, x_ ( "CSGO Base" ) );
 		} );
 	}

@@ -26,4 +26,5 @@
 #include "entity.h"
 #include "globals.h"
 #include "render.h"
+#include "visuals.h"
 #include "hooks.h"

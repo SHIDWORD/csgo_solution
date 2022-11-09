@@ -50,6 +50,7 @@
     <ClInclude Include="usercmd.h" />
     <ClInclude Include="vector.h" />
     <ClInclude Include="util.h" />
+    <ClInclude Include="visuals.h" />
     <ClInclude Include="xorstr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,7 @@
     <ClCompile Include="netvars.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="trampoline.c" />
+    <ClCompile Include="visuals.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -71,6 +73,7 @@
     <ProjectGuid>{9f766f44-091b-4051-b374-18e707d02ea2}</ProjectGuid>
     <RootNamespace>csgosolution</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>base</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

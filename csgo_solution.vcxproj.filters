@@ -111,6 +111,9 @@
     <ClInclude Include="global_vars_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="visuals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="netvars.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="visuals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
