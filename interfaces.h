@@ -12,6 +12,7 @@ struct interfaces_t {
 	c_convar *m_cvar = nullptr;
 	c_global_vars *m_globals = nullptr;
 	c_localize *m_localize = nullptr;
+	c_model_cache *m_mdl_cache = nullptr;
 };
 
 extern interfaces_t interfaces;

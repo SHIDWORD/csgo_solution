@@ -1,5 +1,22 @@
 #pragma once
 
+#define NETVAR( t, func, table, prop ) \
+__forceinline t& func( ) { \
+	auto offset = netvars.get_offset( HASH ( table ), HASH ( prop ) ); \
+	return *( t* )( std::uintptr_t( this ) + offset ); \
+}
+
+#define NETVAR_ADD( t, func, table, prop, off ) \
+__forceinline t& func( ) { \
+	auto offset = netvars.get_offset( HASH ( table ), HASH ( prop ) ); \
+	return *( t* )( ( std::uintptr_t( this ) + offset ) + off ); \
+}
+
+#define OFFSET( t, func, offset ) \
+__forceinline t& func( ) { \
+	return *( t* )( std::uintptr_t( this ) + offset ); \
+}
+
 struct netvar_data_t {
 	hash32_t m_table_name;
 	hash32_t m_prop_name;
@@ -15,20 +32,3 @@ struct netvars_t {
 };
 
 extern netvars_t netvars;
-
-#define NETVAR( t, func, table, prop ) \
-__forceinline t& func( ) { \
-	auto offset = netvars.get_offset( HASH ( table ), HASH ( prop ) ); \
-	return *( t* )( std::uintptr_t( this ) + offset ); \
-}
-
-#define NETVAR_ADDITIVE( t, func, table, prop, off ) \
-__forceinline t& func( ) { \
-	auto offset = netvars.get_offset( HASH ( table ), HASH ( prop ) ); \
-	return *( t* )( ( std::uintptr_t( this ) + offset ) + off ); \
-}
-
-#define OFFSET( t, func, offset ) \
-__forceinline t& func( ) { \
-	return *( t* )( std::uintptr_t( this ) + offset ); \
-}

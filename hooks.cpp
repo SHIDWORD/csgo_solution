@@ -9,9 +9,10 @@ bool hooks_t::init ( ) {
 		throw std::runtime_error ( x_ ( "failed to initialize minhook." ) );
 
 	/* addresses. */
-	const auto _enginevgui_paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
 	const auto _chlclient_create_move = util::get_method < void * > ( interfaces.m_client, 22 );
 	const auto _chlclient_frame_stage_notify = util::get_method < void * > ( interfaces.m_client, 37 );
+	const auto _animstate_modify_eye_position = pattern::find ( x_ ( "client.dll" ), x_ ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ) ).as< void * > ( );
+	const auto _enginevgui_paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
 
 	/* create detours. */
 	m_create_move_proxy.create ( _chlclient_create_move, create_move_proxy );
@@ -27,17 +28,6 @@ bool hooks_t::init ( ) {
 	MH_EnableHook ( MH_ALL_HOOKS );
 
 	return true;
-}
-
-void hooks_t::restore ( ) {
-	MH_DisableHook ( MH_ALL_HOOKS );
-	MH_RemoveHook ( MH_ALL_HOOKS );
-
-	/* restore wndproc. */ {
-		SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( m_old_wndproc ) );
-	}
-
-	MH_Uninitialize ( );
 }
 
 void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time, bool is_active, bool &send_packet ) {
@@ -71,7 +61,9 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
 		interfaces.m_surface->paint ( [ & ] {
 			visuals.paint ( );
-			//render.string ( fonts [ fonts_t::hack_watermark ].m_data, 10, 10, { 255, 255, 255, 255 }, x_ ( "CSGO Base" ) );
+
+			/* render watermark. */
+			render.string ( fonts [ fonts_t::default_font ].m_data, 10, 10, { 255, 255, 255 }, x_ ( "csgo base" ) );
 		} );
 	}
 }
@@ -94,4 +86,14 @@ __declspec( naked ) void __fastcall hooks_t::create_move_proxy ( void *ecx, void
 		pop	ebp
 		retn 0Ch
 	}
+}
+
+void hooks_t::restore ( ) {
+	/* restore window procedure. */
+	SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( m_old_wndproc ) );
+
+	/* restore hooks. */
+	MH_DisableHook ( MH_ALL_HOOKS );
+	MH_RemoveHook ( MH_ALL_HOOKS );
+	MH_Uninitialize ( );
 }

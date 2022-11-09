@@ -9,12 +9,11 @@ void visuals_t::paint ( ) {
 		if ( !pl || pl->dormant ( ) || !pl->is_alive ( ) || pl->team ( ) == g.m_local->team ( ) )
 			continue;
         
-        box_t box;
+        box_t box;	
 		if ( !get_box_bounds ( pl, box ) )
 			continue;
 
 		player_info_t info;
-
 		if ( !interfaces.m_engine->get_player_info ( i, &info ) )
 			continue;
 
@@ -86,4 +85,6 @@ bool visuals_t::get_box_bounds ( player_t *ent, box_t &box ) {
     box.y = static_cast< int >( top );
     box.w = static_cast< int >( right - left );
     box.h = static_cast< int >( bottom - top );
+
+    return true;
 }

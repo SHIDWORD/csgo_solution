@@ -43,6 +43,7 @@
     <ClInclude Include="logging.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="mdl_cache.h" />
     <ClInclude Include="minhook.h" />
     <ClInclude Include="netvars.h" />
     <ClInclude Include="pad.h" />

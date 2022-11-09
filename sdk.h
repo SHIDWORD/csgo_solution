@@ -7,4 +7,5 @@
 #include "color.h"
 #include "localize.h"
 #include "convar.h"
+#include "mdl_cache.h"
 #include "surface.h"

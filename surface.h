@@ -1,11 +1,5 @@
 #pragma once
 
-class c_engine_vgui {
-public:
-	PAD ( 48 );
-	void *m_static_transition_panel;
-};
-
 enum paint_modes_t {
 	paint_uipanels = ( 1 << 0 ),
 	paint_ingamepanels = ( 1 << 1 ),
@@ -25,6 +19,12 @@ enum font_flags_t {
 	font_flag_outline = 0x200,
 	font_flag_custom = 0x400,
 	font_flag_bitmap = 0x800,
+};
+
+class c_engine_vgui {
+public:
+	PAD ( 48 );
+	void *m_static_transition_panel;
 };
 
 class c_surface {
