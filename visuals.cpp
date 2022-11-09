@@ -8,17 +8,25 @@ void visuals_t::paint ( ) {
 
 		if ( !pl || pl->dormant ( ) || !pl->is_alive ( ) || pl->team ( ) == g.m_local->team ( ) )
 			continue;
-
+        
         box_t box;
 		if ( !get_box_bounds ( pl, box ) )
 			continue;
 
 		player_info_t info;
+
 		if ( !interfaces.m_engine->get_player_info ( i, &info ) )
 			continue;
 
-		/* draw box. */
-		render.outlined_rect ( box.x, box.y, box.w, box.h, { 255, 255, 255 } );
+		/* render box. */
+        render.outlined_rect ( box.x - 1, box.y - 1, box.w + 2, box.h + 2, { 0, 0, 0, 200 } );
+		render.outlined_rect ( box.x, box.y, box.w, box.h, { 255, 255, 255, 200 } );
+        render.outlined_rect ( box.x + 1, box.y + 1, box.w - 2, box.h - 2, { 0, 0, 0, 200 } );
+
+		auto dim = render.get_text_size ( fonts [ fonts_t::default_font ].m_data, info.m_name );
+
+        /* render name. */
+		render.string ( fonts [ fonts_t::default_font ].m_data, box.x + ( box.w / 2 ) - ( dim.x / 2 ), box.y - fonts [ fonts_t::default_font ].m_height - 1, { 255, 255, 255, 200 }, info.m_name );
 	}
 }
 

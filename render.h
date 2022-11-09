@@ -1,7 +1,7 @@
 #pragma once
 
 enum class fonts_t {
-	hack_watermark,
+	default_font,
 	hack_visuals
 };
 

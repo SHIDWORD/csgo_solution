@@ -7,7 +7,7 @@ void render_t::init ( ) {
 	interfaces.m_engine->get_screen_size ( m_width, m_height );
 
 	/* init font map */
-	fonts [ fonts_t::hack_watermark ] = font_data_t ( x_ ( "Segoe UI" ), 14, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
+	fonts [ fonts_t::default_font ] = font_data_t ( x_ ( "Segoe UI" ), 14, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
 
 	/* create all fonts */
 	for ( auto &font : fonts ) {
