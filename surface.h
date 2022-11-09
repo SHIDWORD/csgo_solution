@@ -44,7 +44,6 @@ class c_surface {
 		_set_font_glyph_set = 72,
 	};
 public:
-	/* painting functions. */
 	__forceinline void paint ( std::function< void ( ) > callback ) {
 		start_drawing ( );
 		callback ( );
@@ -53,79 +52,78 @@ public:
 
 	__forceinline void start_drawing ( ) {
 		using start_drawing_fn = void ( __thiscall * )( void * );
-		static auto o_start_drawing = pattern::find ( XOR ( "vguimatsurface.dll" ), XOR ( "55 8B EC 83 E4 C0 83 EC 38 80 3D ? ? ? ? ? 56 57 8B F9 75 53" ) ).as< start_drawing_fn > ( );
+		static auto o_start_drawing = pattern::find ( x_ ( "vguimatsurface.dll" ), x_ ( "55 8B EC 83 E4 C0 83 EC 38 80 3D ? ? ? ? ? 56 57 8B F9 75 53" ) ).as< start_drawing_fn > ( );
 		o_start_drawing ( this );
 	}
 
 	__forceinline void finish_drawing ( ) {
 		using finish_drawing_fn = void ( __thiscall * )( void * );
-		static auto o_finish_drawing = pattern::find ( XOR ( "vguimatsurface.dll" ), XOR ( "8B 0D ? ? ? ? 56 C6 05 ? ? ? ? ? 8B 01 FF 90" ) ).as< finish_drawing_fn > ( );
+		static auto o_finish_drawing = pattern::find ( x_ ( "vguimatsurface.dll" ), x_ ( "8B 0D ? ? ? ? 56 C6 05 ? ? ? ? ? 8B 01 FF 90" ) ).as< finish_drawing_fn > ( );
 		o_finish_drawing ( this );
 	}
 
-	/* drawing functions. */
 	void get_text_size ( unsigned long font_in, const wchar_t *text, int &wide, int &tall ) {
 		using get_text_size_fn = void ( __thiscall * )( void *, unsigned long, const wchar_t *, int &, int & );
-		vf< get_text_size_fn > ( this, indices_t::_get_text_size )( this, font_in, text, wide, tall );
+		util::get_method< get_text_size_fn > ( this, indices_t::_get_text_size )( this, font_in, text, wide, tall );
 	}
 
 	bool set_font_glyph_set ( unsigned long font_in, const char *font_name, int tall, int weight, int blur, int scan_lines, int flags, int range_min = 0, int range_max = 0 ) {
 		using set_font_glyph_set_fn = bool ( __thiscall * )( void *, unsigned long, const char *, int, int, int, int, int, int, int );
-		return vf< set_font_glyph_set_fn > ( this, indices_t::_set_font_glyph_set )( this, font_in, font_name, tall, weight, blur, scan_lines, flags, range_min, range_max );
+		return util::get_method< set_font_glyph_set_fn > ( this, indices_t::_set_font_glyph_set )( this, font_in, font_name, tall, weight, blur, scan_lines, flags, range_min, range_max );
 	}
 
 	void draw_set_color ( color_t color ) {
 		using draw_set_color_fn = void ( __thiscall * )( void *, color_t );
-		vf< draw_set_color_fn > ( this, indices_t::_draw_set_color )( this, color );
+		util::get_method< draw_set_color_fn > ( this, indices_t::_draw_set_color )( this, color );
 	}
 
 	void draw_filled_rect ( int x0, int y0, int x1, int y1 ) {
 		using draw_filled_rect_fn = void ( __thiscall * )( void *, int, int, int, int );
-		vf< draw_filled_rect_fn > ( this, indices_t::_draw_filled_rect )( this, x0, y0, x1, y1 );
+		util::get_method< draw_filled_rect_fn > ( this, indices_t::_draw_filled_rect )( this, x0, y0, x1, y1 );
 	}
 
 	void draw_outlined_rect ( int x0, int y0, int x1, int y1 ) {
 		using draw_outlined_rect_fn = void ( __thiscall * )( void *, int, int, int, int );
-		vf< draw_outlined_rect_fn > ( this, indices_t::_draw_outlined_rect )( this, x0, y0, x1, y1 );
+		util::get_method< draw_outlined_rect_fn > ( this, indices_t::_draw_outlined_rect )( this, x0, y0, x1, y1 );
 	}
 
 	void draw_line ( int x0, int y0, int x1, int y1 ) {
 		using draw_line_fn = void ( __thiscall * )( void *, int, int, int, int );
-		vf< draw_line_fn > ( this, indices_t::_draw_line )( this, x0, y0, x1, y1 );
+		util::get_method< draw_line_fn > ( this, indices_t::_draw_line )( this, x0, y0, x1, y1 );
 	}
 
 	void draw_set_text_font ( unsigned long font_in ) {
 		using draw_set_text_font_fn = void ( __thiscall * )( void *, unsigned long );
-		vf< draw_set_text_font_fn > ( this, indices_t::_draw_set_text_font )( this, font_in );
+		util::get_method< draw_set_text_font_fn > ( this, indices_t::_draw_set_text_font )( this, font_in );
 	}
 
 	void draw_set_text_color ( color_t color ) {
 		using draw_set_text_color_fn = void ( __thiscall * )( void *, color_t );
-		vf< draw_set_text_color_fn > ( this, indices_t::_draw_set_text_color )( this, color );
+		util::get_method< draw_set_text_color_fn > ( this, indices_t::_draw_set_text_color )( this, color );
 	}
 
 	void draw_set_text_pos ( int x, int y ) {
 		using draw_set_text_pos_fn = void ( __thiscall * )( void *, int, int );
-		vf< draw_set_text_pos_fn > ( this, indices_t::_draw_set_text_pos )( this, x, y );
+		util::get_method< draw_set_text_pos_fn > ( this, indices_t::_draw_set_text_pos )( this, x, y );
 	}
 
 	void draw_print_text ( const wchar_t *text, int len, int draw_fn = 0 ) {
 		using draw_print_text_fn = void ( __thiscall * )( void *, const wchar_t *, int, int );
-		vf< draw_print_text_fn > ( this, indices_t::_draw_print_text )( this, text, len, draw_fn );
+		util::get_method< draw_print_text_fn > ( this, indices_t::_draw_print_text )( this, text, len, draw_fn );
 	}
 
 	unsigned long create_font ( ) {
 		using create_font_fn = unsigned long ( __thiscall * )( void * );
-		return vf< create_font_fn > ( this, indices_t::_create_font )( this );
+		return util::get_method< create_font_fn > ( this, indices_t::_create_font )( this );
 	}
 
 	void unlock_cursor ( ) {
 		using unlock_cursor_fn = void ( __thiscall * )( void * );
-		vf< unlock_cursor_fn > ( this, indices_t::_unlock_cursor )( this );
+		util::get_method< unlock_cursor_fn > ( this, indices_t::_unlock_cursor )( this );
 	}
 
 	void lock_cursor ( ) {
 		using lock_cursor_fn = void ( __thiscall * )( void * );
-		vf< lock_cursor_fn > ( this, indices_t::_lock_cursor )( this );
+		util::get_method< lock_cursor_fn > ( this, indices_t::_lock_cursor )( this );
 	}
 };

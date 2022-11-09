@@ -53,46 +53,46 @@ class c_engine {
 public:
 	void get_screen_size ( int &width, int &height ) {
 		using get_screen_size_fn = void ( __thiscall * )( void *, int &, int & );
-		vf< get_screen_size_fn > ( this, indices_t::_get_screen_size )( this, width, height );
+		util::get_method< get_screen_size_fn > ( this, indices_t::_get_screen_size )( this, width, height );
 	}
 
 	void get_player_info ( int index, player_info_t *info ) {
-		using get_player_info_fn = void ( __thiscall * )( void*, int, player_info_t * );
-		vf< get_player_info_fn > ( this, indices_t::_get_player_info )( this, index, info );
+		using get_player_info_fn = void ( __thiscall * )( void *, int, player_info_t * );
+		util::get_method< get_player_info_fn > ( this, indices_t::_get_player_info )( this, index, info );
 	}
 
 	int get_local_player ( ) {
 		using get_local_player_fn = int ( __thiscall * )( void * );
-		return vf< get_local_player_fn > ( this, indices_t::_get_local_player )( this );
+		return util::get_method< get_local_player_fn > ( this, indices_t::_get_local_player )( this );
 	}
 
 	void get_view_angles ( const vec_t &angles ) {
 		using get_view_angles_fn = void ( __thiscall * )( void *, const vec_t & );
-		vf< get_view_angles_fn > ( this, indices_t::_get_view_angles )( this, angles );
+		util::get_method< get_view_angles_fn > ( this, indices_t::_get_view_angles )( this, angles );
 	}
 
 	void set_view_angles ( const vec_t &angles ) {
 		using set_view_angles_fn = void ( __thiscall * )( void *, const vec_t & );
-		vf< set_view_angles_fn > ( this, indices_t::_set_view_angles )( this, angles );
+		util::get_method< set_view_angles_fn > ( this, indices_t::_set_view_angles )( this, angles );
 	}
 
 	int get_max_clients ( ) {
 		using get_max_clients_fn = int ( __thiscall * )( void * );
-		return vf< get_max_clients_fn > ( this, indices_t::_get_max_clients )( this );
+		return util::get_method< get_max_clients_fn > ( this, indices_t::_get_max_clients )( this );
 	}
 
 	bool is_in_game ( ) {
 		using is_in_game_fn = bool ( __thiscall * )( void * );
-		return vf< is_in_game_fn > ( this, indices_t::_is_in_game )( this );
+		return util::get_method< is_in_game_fn > ( this, indices_t::_is_in_game )( this );
 	}
 
 	bool is_connected ( ) {
 		using is_connected_fn = bool ( __thiscall * )( void * );
-		return vf< is_connected_fn > ( this, indices_t::_is_connected )( this );
+		return util::get_method< is_connected_fn > ( this, indices_t::_is_connected )( this );
 	}
 
-	void* get_bsp_tree_query ( ) {
+	void *get_bsp_tree_query ( ) {
 		using get_bsp_tree_query_fn = void *( __thiscall * )( void * );
-		return vf< get_bsp_tree_query_fn > ( this, indices_t::_get_bsp_tree_query )( this );
+		return util::get_method< get_bsp_tree_query_fn > ( this, indices_t::_get_bsp_tree_query )( this );
 	}
 };

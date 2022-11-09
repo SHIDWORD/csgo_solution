@@ -6,11 +6,12 @@
 #include <map>
 #include <unordered_map>
 #include <functional>
+#include <fstream>
 #include <cstdio>
 #include <cmath>
 #include <algorithm>
-#include "vfunc.h"
 #include "fnv1a.h"
+#include "util.h"
 #include "minhook.h"
 #include "xorstr.h"
 #include "lazy_importer.h"
@@ -21,6 +22,7 @@
 #include "sdk.h"
 #include "interfaces.h"
 #include "matrix.h"
+#include "netvars.h"
 #include "entity.h"
 #include "globals.h"
 #include "render.h"

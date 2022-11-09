@@ -2,15 +2,15 @@
 
 class c_input {
 public:
-	void *vftable; 
+	void *vftable;
 	PAD ( 0x8 );
-	bool m_track_ir_available; 
-	bool m_mouse_initialized; 
-	bool m_mouse_active; 
-	PAD ( 0x9A ); 
-	bool m_camera_in_thirdperson; 
+	bool m_track_ir_available;
+	bool m_mouse_initialized;
+	bool m_mouse_active;
+	PAD ( 0x9A );
+	bool m_camera_in_thirdperson;
 	PAD ( 0x2 );
-	vec_t m_camera_offset; 
+	vec_t m_camera_offset;
 	PAD ( 0x38 );
 	ucmd_t *m_cmds;
 	verified_ucmd_t *m_verified_cmds;

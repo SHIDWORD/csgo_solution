@@ -8,11 +8,11 @@ class c_entlist {
 public:
 	template < typename t >
 	__forceinline t get ( int idx ) {
-		return vf< t ( __thiscall * )( void *, int ) > ( this, indices_t::_get )( this, idx );
+		return util::get_method< t ( __thiscall * )( void *, int ) > ( this, indices_t::_get )( this, idx );
 	}
 
 	template < typename t >
 	__forceinline t get_by_handle ( std::uint32_t handle ) {
-		return vf< t ( __thiscall * )( void *, std::uint32_t ) > ( this, indices_t::_get_by_handle )( this, handle );
+		return util::get_method< t ( __thiscall * )( void *, std::uint32_t ) > ( this, indices_t::_get_by_handle )( this, handle );
 	}
 };

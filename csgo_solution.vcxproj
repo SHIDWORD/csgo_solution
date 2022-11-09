@@ -27,6 +27,7 @@
     <ClInclude Include="entlist.h" />
     <ClInclude Include="fnv1a.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="global_vars_base.h" />
     <ClInclude Include="hde\hde32.h" />
     <ClInclude Include="hde\hde64.h" />
     <ClInclude Include="hde\pstdint.h" />
@@ -39,6 +40,7 @@
     <ClInclude Include="lazy_importer.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="minhook.h" />
+    <ClInclude Include="netvars.h" />
     <ClInclude Include="pad.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="render.h" />
@@ -47,7 +49,7 @@
     <ClInclude Include="trampoline.h" />
     <ClInclude Include="usercmd.h" />
     <ClInclude Include="vector.h" />
-    <ClInclude Include="vfunc.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="xorstr.h" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +61,7 @@
     <ClCompile Include="hook.c" />
     <ClCompile Include="hooks.cpp" />
     <ClCompile Include="interfaces.cpp" />
+    <ClCompile Include="netvars.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="trampoline.c" />
   </ItemGroup>
