@@ -7,7 +7,7 @@ bool netvars_t::init ( ) {
 
 	if ( !client_class )
 		return false;
-	
+
 	for ( ; client_class; client_class = client_class->m_next )
 		store_table ( client_class->m_recv_table );
 

@@ -4,8 +4,8 @@ class player_t;
 class weapon_t;
 
 struct animstate_t {
-	const int *	m_layer_order_preset;
-	bool m_first_run_since_init;  
+	const int *m_layer_order_preset;
+	bool m_first_run_since_init;
 	bool m_first_foot_plant_since_init;
 	int	m_last_procedural_foot_plant_update_frame;
 	float m_eye_position_smooth_lerp;
@@ -15,17 +15,17 @@ struct animstate_t {
 	float m_step_height_left;
 	float m_step_height_right;
 	weapon_t *m_weapon_last_bone_setup;
-	player_t *m_player;  
+	player_t *m_player;
 	weapon_t *m_weapon;
 	weapon_t *m_weapon_last;
-	float m_last_update_time;  
-	int	m_last_update_frame;  
-	float m_last_update_increment;  
-	float m_eye_yaw;  
-	float m_eye_pitch;  
-	float m_abs_yaw;  
+	float m_last_update_time;
+	int	m_last_update_frame;
+	float m_last_update_increment;
+	float m_eye_yaw;
+	float m_eye_pitch;
+	float m_abs_yaw;
 	float m_abs_yaw_last;
-	float m_move_yaw;  
+	float m_move_yaw;
 	float m_move_yaw_ideal;
 	float m_move_yaw_current_to_ideal;
 	float m_time_to_align_lower_body;
@@ -35,20 +35,20 @@ struct animstate_t {
 	float m_duck_amount;
 	float m_duck_additional;
 	float m_recrouch_weight;
-	vec_t m_origin;  
-	vec_t m_origin_last; 
-	vec_t m_vel;  
-	vec_t m_vel_normalized;  
-	vec_t m_vel_normalized_non_zero;  
-	float m_vel_length_2d;  
+	vec_t m_origin;
+	vec_t m_origin_last;
+	vec_t m_vel;
+	vec_t m_vel_normalized;
+	vec_t m_vel_normalized_non_zero;
+	float m_vel_length_2d;
 	float m_vel_length_z;
-	float m_run_speed_normalized;                  
+	float m_run_speed_normalized;
 	float m_walk_speed_normalized;
 	float m_crouch_speed_normalized;
 	float m_duration_moving;
 	float m_duration_still;
 	bool m_on_ground;
-	bool m_landing;  
+	bool m_landing;
 	float m_jump_to_fall;
 	float m_duration_in_air;
 	float m_left_ground_height;
@@ -68,10 +68,10 @@ struct animstate_t {
 	float m_next_twitch_time;
 	float m_time_of_last_known_injury;
 	float m_last_velocitytest_time;
-	vec_t m_last_vel;  
-	vec_t m_target_accel;  
-	vec_t m_accel;                  
-	float m_accel_weight;  
+	vec_t m_last_vel;
+	vec_t m_target_accel;
+	vec_t m_accel;
+	float m_accel_weight;
 	PAD ( 12 );
 	float m_strafe_change_weight;
 	float m_strafe_change_target_weight;
@@ -88,7 +88,7 @@ struct animstate_t {
 	PAD ( 16 );
 	float m_aim_yaw_min;
 	float m_aim_yaw_max;
-	int	m_state_version;     
+	int	m_state_version;
 };
 
 class entity_t {
@@ -98,7 +98,7 @@ public:
 	OFFSET ( void *, networkable, 0x8 );
 	NETVAR ( int, team, "DT_BaseEntity", "m_iTeamNum" );
 	NETVAR ( int, effects, "DT_BaseEntity", "m_fEffects" );
-	
+
 	__forceinline const vec_t &abs_origin ( ) {
 		using abs_origin_fn = const vec_t &( __thiscall * )( void * );
 		return util::get_method < abs_origin_fn > ( this, 10 )( this );
@@ -143,5 +143,4 @@ public:
 
 class weapon_t : public player_t {
 public:
-
 };

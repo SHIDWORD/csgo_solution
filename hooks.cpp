@@ -4,7 +4,7 @@ hooks_t hooks { };
 
 bool hooks_t::init ( ) {
 	m_hwnd = LI_FN ( FindWindowA )( x_ ( "Valve001" ), nullptr );
-	
+
 	if ( MH_Initialize ( ) != MH_OK )
 		throw std::runtime_error ( x_ ( "failed to initialize minhook." ) );
 
@@ -18,13 +18,13 @@ bool hooks_t::init ( ) {
 	m_create_move_proxy.create ( _chlclient_create_move, create_move_proxy );
 	m_frame_stage_notify.create ( _chlclient_frame_stage_notify, frame_stage_notify );
 	m_paint.create ( _enginevgui_paint, paint );
-	
+
 	/* set wndproc */
 	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
 
 	if ( !m_old_wndproc )
 		throw std::runtime_error ( x_ ( "failed to set window procedure." ) );
-	
+
 	MH_EnableHook ( MH_ALL_HOOKS );
 
 	return true;
@@ -64,7 +64,7 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 
 			/* render watermark. */
 			render.string ( fonts [ fonts_t::default_font ].m_data, 10, 10, { 255, 255, 255 }, x_ ( "csgo base" ) );
-		} );
+			} );
 	}
 }
 
@@ -82,9 +82,9 @@ __declspec( naked ) void __fastcall hooks_t::create_move_proxy ( void *ecx, void
 		push dword ptr [ input_sample_frame_time ];
 		push dword ptr [ seq_num ];
 		call create_move
-		pop	ebx
-		pop	ebp
-		retn 0Ch
+			pop	ebx
+			pop	ebp
+			retn 0Ch
 	}
 }
 

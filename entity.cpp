@@ -20,7 +20,7 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 		e->bone_pos ( head_bone, head_pos, temp );
 
 		float v6 = head_pos.z + 1.7f;
-		
+
 		if ( input_eye_pos->z > v6 ) {
 			float v8 = 0.0;
 			float v9 = ( float ) ( fabs ( input_eye_pos->z - v6 ) - 4.0 ) * 0.16666667;
