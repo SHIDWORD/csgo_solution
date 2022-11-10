@@ -8,7 +8,7 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 
 	const auto ground_ent = interfaces.m_entlist->get_by_handle< player_t * > ( e->handle ( ) );
 
-	if ( !state->m_landing || state->m_duck_amount == 0.0 || ground_ent )
+	if ( !state->m_landing || state->m_duck_amount == 0.0f || ground_ent )
 		return;
 
 	interfaces.m_mdl_cache->begin_lock ( );
@@ -22,13 +22,13 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 		float v6 = head_pos.z + 1.7f;
 
 		if ( input_eye_pos->z > v6 ) {
-			float v8 = 0.0;
-			float v9 = ( float ) ( fabs ( input_eye_pos->z - v6 ) - 4.0 ) * 0.16666667;
+			float v8 = 0.0f;
+			float v9 = ( float ) ( fabs ( input_eye_pos->z - v6 ) - 4.0f ) * 0.16666667f;
 
 			if ( v9 >= 0.0 )
-				v8 = fminf ( v9, 1.0 );
+				v8 = fminf ( v9, 1.0f );
 
-			input_eye_pos->z = ( ( v6 - input_eye_pos->z ) * ( ( ( v8 * v8 ) * 3.0 ) - ( ( ( v8 * v8 ) * 2.0 ) * v8 ) ) ) + input_eye_pos->z;
+			input_eye_pos->z = ( ( v6 - input_eye_pos->z ) * ( ( ( v8 * v8 ) * 3.0f ) - ( ( ( v8 * v8 ) * 2.0f ) * v8 ) ) ) + input_eye_pos->z;
 		}
 	}
 

@@ -27,11 +27,13 @@ struct hooks_t {
 	static void __fastcall frame_stage_notify ( void *ecx, void *edx, client_frame_stage_t stage );
 	static void __fastcall paint ( void *ecx, void *edx, paint_modes_t mode );
 	static LRESULT __stdcall wnd_proc ( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param );
+	static void __fastcall paint_traverse ( void *ecx, void *edx, unsigned int panel, bool force_repaint, bool allow_force );
 
 	/* detours. */
 	detour_t m_create_move_proxy;
 	detour_t m_frame_stage_notify;
 	detour_t m_paint;
+	detour_t m_paint_traverse;
 
 	/* etc. */
 	WNDPROC m_old_wndproc;

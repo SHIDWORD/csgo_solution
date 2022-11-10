@@ -3,6 +3,7 @@
 #include "client.h"
 #include "input.h"
 #include "entlist.h"
+#include "panel.h"
 #include "global_vars_base.h"
 #include "color.h"
 #include "localize.h"

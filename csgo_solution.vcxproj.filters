@@ -132,6 +132,9 @@
     <ClInclude Include="mdl_cache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry.cpp">

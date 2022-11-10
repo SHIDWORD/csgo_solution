@@ -47,6 +47,7 @@
     <ClInclude Include="minhook.h" />
     <ClInclude Include="netvars.h" />
     <ClInclude Include="pad.h" />
+    <ClInclude Include="panel.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="sdk.h" />

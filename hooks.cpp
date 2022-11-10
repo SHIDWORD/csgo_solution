@@ -9,15 +9,15 @@ bool hooks_t::init ( ) {
 		throw std::runtime_error ( x_ ( "failed to initialize minhook." ) );
 
 	/* addresses. */
-	const auto _chlclient_create_move = util::get_method < void * > ( interfaces.m_client, 22 );
-	const auto _chlclient_frame_stage_notify = util::get_method < void * > ( interfaces.m_client, 37 );
-	const auto _animstate_modify_eye_position = pattern::find ( x_ ( "client.dll" ), x_ ( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14" ) ).as< void * > ( );
-	const auto _enginevgui_paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
+	const auto _chlclient__create_move = util::get_method < void * > ( interfaces.m_client, 22 );
+	const auto _chlclient__frame_stage_notify = util::get_method < void * > ( interfaces.m_client, 37 );
+	const auto _enginevgui__paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
+	const auto _ipanel__paint_traverse = util::get_method < void * > ( interfaces.m_panel, 41 );
 
 	/* create detours. */
-	m_create_move_proxy.create ( _chlclient_create_move, create_move_proxy );
-	m_frame_stage_notify.create ( _chlclient_frame_stage_notify, frame_stage_notify );
-	m_paint.create ( _enginevgui_paint, paint );
+	m_create_move_proxy.create ( _chlclient__create_move, create_move_proxy );
+	m_frame_stage_notify.create ( _chlclient__frame_stage_notify, frame_stage_notify );
+	m_paint.create ( _enginevgui__paint, paint );
 
 	/* set wndproc */
 	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
@@ -45,12 +45,27 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 void __fastcall hooks_t::frame_stage_notify ( void *ecx, void *edx, client_frame_stage_t stage ) {
 	if ( stage != frame_start )
 		g.m_stage = stage;
+	
+	/*
+		if you want to want to run code before you receive a frame update from the server, you can do it here.
+		usually for storing data from the server, or for modifying data before it's used.
+	*/
 
 	/* store local player. */
 	g.m_local = ( interfaces.m_engine->is_connected ( ) || interfaces.m_engine->is_in_game ( ) ) ? interfaces.m_entlist->get< player_t * > ( interfaces.m_engine->get_local_player ( ) ) : nullptr;
 
 	/* call og. */
 	hooks.m_frame_stage_notify.get_old_method< decltype ( &frame_stage_notify ) > ( )( ecx, edx, stage );
+}
+
+void __fastcall hooks_t::paint_traverse ( void *ecx, void *edx, unsigned int panel, bool force_repaint, bool allow_force ) {
+	const auto panel_hash = fnv1a::hash_const ( interfaces.m_panel->get_name ( panel ) );
+
+	hooks.m_paint_traverse.get_old_method< decltype ( &paint_traverse ) > ( )( ecx, edx, panel, force_repaint, allow_force );
+
+	if ( panel_hash == HASH ( "FocusOverlayPanel" ) ) {
+		/* update shit before you draw. */
+	}
 }
 
 void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
@@ -64,7 +79,7 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 
 			/* render watermark. */
 			render.string ( fonts [ fonts_t::default_font ].m_data, 10, 10, { 255, 255, 255 }, x_ ( "csgo base" ) );
-			} );
+		} );
 	}
 }
 
@@ -82,9 +97,9 @@ __declspec( naked ) void __fastcall hooks_t::create_move_proxy ( void *ecx, void
 		push dword ptr [ input_sample_frame_time ];
 		push dword ptr [ seq_num ];
 		call create_move
-			pop	ebx
-			pop	ebp
-			retn 0Ch
+		pop	ebx
+		pop	ebp
+		retn 0Ch
 	}
 }
 
