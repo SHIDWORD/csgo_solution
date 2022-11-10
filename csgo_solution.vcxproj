@@ -26,6 +26,8 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entlist.h" />
+    <ClInclude Include="events.h" />
+    <ClInclude Include="event_handler.h" />
     <ClInclude Include="fnv1a.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="global_vars_base.h" />
@@ -64,6 +66,7 @@
     <ClCompile Include="buffer.c" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entry.cpp" />
+    <ClCompile Include="event_handler.cpp" />
     <ClCompile Include="hde\hde32.c" />
     <ClCompile Include="hde\hde64.c" />
     <ClCompile Include="hook.c" />

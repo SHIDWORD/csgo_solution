@@ -18,6 +18,7 @@ bool hooks_t::init ( ) {
 	m_create_move_proxy.create ( _chlclient__create_move, create_move_proxy );
 	m_frame_stage_notify.create ( _chlclient__frame_stage_notify, frame_stage_notify );
 	m_paint.create ( _enginevgui__paint, paint );
+	m_paint_traverse.create ( _ipanel__paint_traverse, paint_traverse );
 
 	/* set wndproc */
 	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
@@ -76,9 +77,7 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
 		interfaces.m_surface->paint ( [ & ] {
 			visuals.paint ( );
-
-			/* render watermark. */
-			render.string ( fonts [ fonts_t::default_font ].m_data, 10, 10, { 255, 255, 255 }, x_ ( "csgo base" ) );
+			logs.paint ( );
 		} );
 	}
 }

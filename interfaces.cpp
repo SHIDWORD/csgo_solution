@@ -19,6 +19,7 @@ bool interfaces_t::init ( ) {
 	m_client	= create_interface< c_client * > ( x_ ( "client.dll" ), x_ ( "VClient018" ) );
 	m_entlist	= create_interface< c_entlist * > ( x_ ( "client.dll" ), x_ ( "VClientEntityList003" ) );
 	m_cvar		= create_interface< c_convar * > ( x_ ( "vstdlib.dll" ), x_ ( "VEngineCvar007" ) );
+	m_event_mgr = create_interface< c_game_event_mgr * > ( x_ ( "engine.dll" ), x_ ( "GAMEEVENTSMANAGER002" ) );
 	m_panel		= create_interface< c_panel * > ( x_ ( "vgui2.dll" ), x_ ( "VGUI_Panel009" ) );
 
 	/* get addresses. */

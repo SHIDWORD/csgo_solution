@@ -4,6 +4,7 @@
 #include <thread>
 #include <cstdint>
 #include <map>
+#include <deque>
 #include <unordered_map>
 #include <functional>
 #include <fstream>
@@ -24,6 +25,7 @@
 #include "usercmd.h"
 #include "sdk.h"
 #include "interfaces.h"
+#include "event_handler.h"
 #include "logging.h"
 #include "netvars.h"
 #include "entity.h"

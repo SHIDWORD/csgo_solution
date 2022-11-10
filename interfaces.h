@@ -14,6 +14,7 @@ struct interfaces_t {
 	c_localize *m_localize = nullptr;
 	c_model_cache *m_mdl_cache = nullptr;
 	c_panel *m_panel = nullptr;
+	c_game_event_mgr *m_event_mgr = nullptr;
 };
 
 extern interfaces_t interfaces;

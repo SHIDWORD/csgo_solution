@@ -2,7 +2,7 @@
 
 enum class fonts_t {
 	default_font,
-	hack_visuals
+	log_font
 };
 
 struct font_data_t {

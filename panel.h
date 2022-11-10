@@ -2,7 +2,7 @@
 
 class c_panel {
 	enum indices_t : std::uintptr_t {
-		_get_name = 31,
+		_get_name = 36,
 	};
 public:
 	__forceinline const char *get_name ( unsigned int panel ) {

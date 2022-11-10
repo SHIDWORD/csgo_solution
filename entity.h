@@ -67,7 +67,7 @@ struct animstate_t {
 	PAD ( 14 );
 	float m_next_twitch_time;
 	float m_time_of_last_known_injury;
-	float m_last_velocitytest_time;
+	float m_last_velocity_test_time;
 	vec_t m_last_vel;
 	vec_t m_target_accel;
 	vec_t m_accel;
