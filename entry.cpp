@@ -10,7 +10,6 @@ void __stdcall cheat_thread ( ) {
 	netvars.init ( );
 	render.init ( );
 	hooks.init ( );
-	event_handler.init ( );
 
 	/* notify our user. */
 	logs.push_log ( x_ ( "Injected successfully.\n" ), { 255, 255, 255 } );
@@ -19,7 +18,6 @@ void __stdcall cheat_thread ( ) {
 	while ( !LI_FN ( GetAsyncKeyState )( VK_END ) )
 		std::this_thread::sleep_for ( std::chrono::milliseconds ( 200 ) );
 
-	event_handler.remove ( );
 	hooks.restore ( );
 	LI_FN ( FreeLibraryAndExitThread )( g.m_module, 0 );
 }

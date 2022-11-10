@@ -2,6 +2,8 @@
 
 hooks_t hooks { };
 
+std::unique_ptr< c_event_handler > event_handler = nullptr;
+
 bool hooks_t::init ( ) {
 	m_hwnd = LI_FN ( FindWindowA )( x_ ( "Valve001" ), nullptr );
 
@@ -20,7 +22,10 @@ bool hooks_t::init ( ) {
 	m_paint.create ( _enginevgui__paint, paint );
 	m_paint_traverse.create ( _ipanel__paint_traverse, paint_traverse );
 
-	/* set wndproc */
+	/* create event handler. */
+	event_handler = std::make_unique < c_event_handler > ( );
+
+	/* set wndproc hook. */
 	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
 
 	if ( !m_old_wndproc )
