@@ -26,6 +26,7 @@
 #include "sdk.h"
 #include "interfaces.h"
 #include "event_handler.h"
+#include "inputpred.h"
 #include "logging.h"
 #include "netvars.h"
 #include "entity.h"

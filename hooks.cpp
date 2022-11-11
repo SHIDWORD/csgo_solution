@@ -2,34 +2,32 @@
 
 hooks_t hooks { };
 
-std::unique_ptr< c_event_handler > event_handler = nullptr;
+std::unique_ptr < c_event_handler > event_handler = nullptr;
 
 bool hooks_t::init ( ) {
 	m_hwnd = LI_FN ( FindWindowA )( x_ ( "Valve001" ), nullptr );
+	
+	/* set wndproc hook. */
+	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );	
 
 	if ( MH_Initialize ( ) != MH_OK )
 		throw std::runtime_error ( x_ ( "failed to initialize minhook." ) );
 
 	/* addresses. */
-	const auto _chlclient__create_move = util::get_method < void * > ( interfaces.m_client, 22 );
-	const auto _chlclient__frame_stage_notify = util::get_method < void * > ( interfaces.m_client, 37 );
-	const auto _enginevgui__paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
-	const auto _ipanel__paint_traverse = util::get_method < void * > ( interfaces.m_panel, 41 );
+	const auto _create_move = util::get_method < void * > ( interfaces.m_client, 22 );
+	const auto _frame_stage_notify = util::get_method < void * > ( interfaces.m_client, 37 );
+	const auto _paint = pattern::find ( x_ ( "engine.dll" ), x_ ( "55 8B EC 83 EC 40 53 8B D9 8B 0D ? ? ? ? 89" ) ).as< void * > ( );
+	const auto _paint_traverse = util::get_method < void * > ( interfaces.m_panel, 41 );
+	const auto _run_command = util::get_method < void * > ( interfaces.m_prediction, 19 );
 
 	/* create detours. */
-	m_create_move_proxy.create ( _chlclient__create_move, create_move_proxy );
-	m_frame_stage_notify.create ( _chlclient__frame_stage_notify, frame_stage_notify );
-	m_paint.create ( _enginevgui__paint, paint );
-	m_paint_traverse.create ( _ipanel__paint_traverse, paint_traverse );
+	m_create_move_proxy.create ( _create_move, create_move_proxy );
+	m_frame_stage_notify.create ( _frame_stage_notify, frame_stage_notify );
+	m_paint.create ( _paint, paint );
+	m_paint_traverse.create ( _paint_traverse, paint_traverse );
 
 	/* create event handler. */
 	event_handler = std::make_unique < c_event_handler > ( );
-
-	/* set wndproc hook. */
-	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
-
-	if ( !m_old_wndproc )
-		throw std::runtime_error ( x_ ( "failed to set window procedure." ) );
 
 	MH_EnableHook ( MH_ALL_HOOKS );
 
@@ -51,17 +49,19 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 void __fastcall hooks_t::frame_stage_notify ( void *ecx, void *edx, client_frame_stage_t stage ) {
 	if ( stage != frame_start )
 		g.m_stage = stage;
-	
-	/*
-		if you want to want to run code before you receive a frame update from the server, you can do it here.
-		usually for storing data from the server, or for modifying data before it's used.
-	*/
 
 	/* store local player. */
 	g.m_local = ( interfaces.m_engine->is_connected ( ) || interfaces.m_engine->is_in_game ( ) ) ? interfaces.m_entlist->get< player_t * > ( interfaces.m_engine->get_local_player ( ) ) : nullptr;
 
 	/* call og. */
 	hooks.m_frame_stage_notify.get_old_method< decltype ( &frame_stage_notify ) > ( )( ecx, edx, stage );
+}
+
+void __fastcall hooks_t::run_command ( player_t *player, ucmd_t *ucmd, c_move_helper *move_helper ) {
+	hooks.m_run_command.get_old_method < decltype ( &run_command ) > ( )( player, ucmd, move_helper );
+
+	/* set move helper pointer. */
+	interfaces.m_move_helper = move_helper;
 }
 
 void __fastcall hooks_t::paint_traverse ( void *ecx, void *edx, unsigned int panel, bool force_repaint, bool allow_force ) {

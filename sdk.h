@@ -5,6 +5,7 @@
 #include "entlist.h"
 #include "panel.h"
 #include "events.h"
+#include "prediction.h"
 #include "global_vars_base.h"
 #include "color.h"
 #include "localize.h"

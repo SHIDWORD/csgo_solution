@@ -141,6 +141,12 @@
     <ClInclude Include="event_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inputpred.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="prediction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry.cpp">
@@ -186,6 +192,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="event_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inputpred.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

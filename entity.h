@@ -91,10 +91,35 @@ struct animstate_t {
 	int	m_state_version;
 };
 
+enum class life_states_t : uint8_t {
+	life_alive = 0,
+	life_dying,
+	life_dead,
+	life_reborn,
+	life_discard
+};
+
+enum flags_t : int {
+	on_ground = ( 1 << 0 ),
+	ducking = ( 1 << 1 ),
+	water_jump = ( 1 << 2 ),
+	on_train = ( 1 << 3 ),
+	in_rain = ( 1 << 4 ),
+	frozen = ( 1 << 5 ),
+	at_controls = ( 1 << 6 ),
+	client = ( 1 << 7 ),
+	fake_client = ( 1 << 8 ),
+};
+
 class entity_t {
 public:
 	OFFSET ( void *, renderable, 0x4 );
 	OFFSET ( bool, dormant, 0xED );
+	OFFSET ( float, fall_vel, 0xC09 );
+	OFFSET ( int, think_tick, 0xFC );
+	OFFSET ( ucmd_t *, current_cmd, 0x3348 );
+	OFFSET ( ucmd_t *, last_cmd, 0x3298 );
+	OFFSET ( int, buttons, 0x31FC );
 	OFFSET ( void *, networkable, 0x8 );
 	NETVAR ( int, team, "DT_BaseEntity", "m_iTeamNum" );
 	NETVAR ( int, effects, "DT_BaseEntity", "m_fEffects" );
@@ -110,24 +135,23 @@ public:
 	}
 };
 
-enum class life_states_t : uint8_t {
-	life_alive = 0,
-	life_dying,
-	life_dead,
-	life_reborn,
-	life_discard
-};
-
 class player_t : public entity_t {
 public:
+	OFFSET ( int, button_pressed, 0x3200 );
+	OFFSET ( int, button_last, 0x3208 );
+	OFFSET ( int, button_released, 0x3204 );
 	NETVAR ( int, health, "DT_BasePlayer", "m_iHealth" );
 	NETVAR ( life_states_t, life_state, "DT_BasePlayer", "m_lifeState" );
 	NETVAR ( int, tick_base, "DT_BasePlayer", "m_TickBase" );
 	NETVAR ( uint32_t, handle, "DT_BasePlayer", "m_hGroundEntity" );
+	NETVAR ( int, flags, "DT_BasePlayer", "m_fFlags" );
 	NETVAR_ADD ( vec_t, mins, "DT_BaseEntity", "m_Collision", 0x8 );
 	NETVAR_ADD ( vec_t, maxs, "DT_BaseEntity", "m_Collision", 0x14 );
+	OFFSET ( int, button_disabled, 0x3340 );
+	OFFSET ( int, sequence, 0xA30 );
 	OFFSET ( animstate_t *, animstate, 0x9960 );
 	OFFSET ( bool, use_new_animstate, 0x9B14 );
+	OFFSET ( int, button_forced, 0x3344 );
 
 	__forceinline bool is_alive ( ) {
 		return ( life_state ( ) == life_states_t::life_alive ) && health ( ) > 0;
@@ -138,6 +162,10 @@ public:
 	int lookup_bone ( const char *name );
 	void modify_eye_position ( animstate_t *state, vec_t *input_eye_pos );
 	vec_t shoot_pos ( );
+	void post_think ( );
+	void think ( );
+	void set_sequence ( int sequence );
+	bool physics_run_think ( int think_method );
 	void bone_pos ( int bone, vec_t &out, vec_t &q );
 };
 

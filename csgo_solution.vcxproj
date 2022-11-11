@@ -39,6 +39,7 @@
     <ClInclude Include="hooks.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="inputpred.h" />
     <ClInclude Include="interfaces.h" />
     <ClInclude Include="lazy_importer.h" />
     <ClInclude Include="localize.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="pad.h" />
     <ClInclude Include="panel.h" />
     <ClInclude Include="pattern.h" />
+    <ClInclude Include="prediction.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="sdk.h" />
     <ClInclude Include="surface.h" />
@@ -71,6 +73,7 @@
     <ClCompile Include="hde\hde64.c" />
     <ClCompile Include="hook.c" />
     <ClCompile Include="hooks.cpp" />
+    <ClCompile Include="inputpred.cpp" />
     <ClCompile Include="interfaces.cpp" />
     <ClCompile Include="logging.cpp" />
     <ClCompile Include="math.cpp" />
