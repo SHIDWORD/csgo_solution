@@ -47,7 +47,7 @@ void inputpred_t::predict ( ucmd_t *ucmd ) {
 
 	if ( think_tick > 0 && think_tick <= g.m_local->tick_base ( ) ) {
 		g.m_local->think_tick ( ) = -1;
-		static auto set_next_think = pattern::find ( x_ ( "clig.m_local.dll" ), x_ ( "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18" ) ).as< void ( __thiscall * )( void *, int ) > ( );
+		static auto set_next_think = pattern::find ( x_ ( "client.dll" ), x_ ( "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18" ) ).as< void ( __thiscall * )( void *, int ) > ( );
 		set_next_think ( g.m_local, 0 );
 		g.m_local->think ( );
 	}
