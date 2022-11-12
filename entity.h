@@ -150,6 +150,7 @@ public:
 	OFFSET ( int, button_disabled, 0x3340 );
 	OFFSET ( int, sequence, 0xA30 );
 	OFFSET ( animstate_t *, animstate, 0x9960 );
+	NETVAR ( uint32_t, weapon_handle, "DT_BaseEntity", "m_hActiveWeapon" );
 	OFFSET ( bool, use_new_animstate, 0x9B14 );
 	OFFSET ( int, button_forced, 0x3344 );
 
@@ -162,6 +163,7 @@ public:
 	int lookup_bone ( const char *name );
 	void modify_eye_position ( animstate_t *state, vec_t *input_eye_pos );
 	vec_t shoot_pos ( );
+	void pre_think ( );
 	void post_think ( );
 	void think ( );
 	void set_sequence ( int sequence );

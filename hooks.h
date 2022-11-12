@@ -28,7 +28,7 @@ struct hooks_t {
 	static void __fastcall paint ( void *ecx, void *edx, paint_modes_t mode );
 	static LRESULT __stdcall wnd_proc ( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param );
 	static void __fastcall paint_traverse ( void *ecx, void *edx, unsigned int panel, bool force_repaint, bool allow_force );
-	static void __fastcall run_command ( player_t *player, ucmd_t *ucmd, c_move_helper *move_helper );;
+	static void __fastcall run_command ( void *ecx, void *edx, player_t *player, ucmd_t *ucmd, c_move_helper *move_helper );;
 	
 	/* detours. */
 	detour_t m_create_move_proxy;

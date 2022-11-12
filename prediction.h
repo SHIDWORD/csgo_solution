@@ -1,5 +1,7 @@
 #pragma once
 
+class player_t;
+
 class c_move_helper {
 public:
 	virtual void pad00 ( ) = 0;
@@ -55,13 +57,13 @@ public:
 	bool m_first_time_predicted;			
 	bool m_engine_paused;
 public:
-	void check_moving_ground ( void *player, float frametime ) {
-		using check_moving_ground_fn = void ( __thiscall * )( void *, void *, float );
+	void check_moving_ground ( player_t *player, double frametime ) {
+		using check_moving_ground_fn = void ( __thiscall * )( void *, player_t *, double );
 		util::get_method < check_moving_ground_fn > ( this, indices_t::_check_moving_ground )( this, player, frametime );
 	}
 
-	void setup_move ( void *player, ucmd_t *ucmd, void *move_helper, c_move_data *move ) {
-		using setup_move_fn = void ( __thiscall * )( void *, void *, ucmd_t *, void *, c_move_data * );
+	void setup_move ( player_t *player, ucmd_t *ucmd, void *move_helper, c_move_data *move ) {
+		using setup_move_fn = void ( __thiscall * )( void *, player_t *, ucmd_t *, void *, c_move_data * );
 		util::get_method < setup_move_fn > ( this, indices_t::_setup_move )( this, player, ucmd, move_helper, move );
 	}
 
@@ -70,8 +72,8 @@ public:
 		util::get_method < set_local_view_angles_fn > ( this, indices_t::_set_local_view_angles )( this, ang );
 	}
 
-	void finish_move ( void *player, ucmd_t *ucmd, c_move_data *move ) {
-		using finish_move_fn = void ( __thiscall * )( void *, void *, ucmd_t *, c_move_data * );
+	void finish_move ( player_t *player, ucmd_t *ucmd, c_move_data *move ) {
+		using finish_move_fn = void ( __thiscall * )( void *, player_t *, ucmd_t *, c_move_data * );
 		util::get_method < finish_move_fn > ( this, indices_t::_finish_move )( this, player, ucmd, move );
 	}
 };

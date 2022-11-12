@@ -3,11 +3,10 @@
 logs_t logs { };
 
 void logs_t::push_log ( const char* msg, color_t col ) {
-	/* print in console. */
 	interfaces.m_cvar->console_color_printf ( { 255, 0, 0 }, x_ ( "[ hypnotic ] " ) );
 	interfaces.m_cvar->console_color_printf ( col, msg );
 	
-	/* send to deque. */
+	/* push to deque. */
 	m_logs.push_front ( { msg, col, interfaces.m_globals->m_curtime, 255 } );
 }
 
@@ -17,16 +16,18 @@ void logs_t::paint ( ) {
 
 	for ( int i { 0 }; i < m_logs.size ( ); i++ ) {
 		auto &log = m_logs [ i ];
+		
+		/* expire once our alpha has reached zero and if we're past our due time. */ {
+			if ( interfaces.m_globals->m_curtime - log.m_time > 5.f )
+				log.m_alpha -= ( 255 / 0.5f ) * interfaces.m_globals->m_frametime;
+
+			if ( log.m_alpha < 0.f && ( interfaces.m_globals->m_curtime - log.m_time > 5.f ) ) {
+				m_logs.pop_back ( );
+				continue;
+			}
+		}
 
 		if ( m_logs.size ( ) > 9 ) {
-			m_logs.pop_back ( );
-			continue;
-		}
-		
-		if ( interfaces.m_globals->m_curtime - log.m_time > 5.f )
-			log.m_alpha -= ( 255 / 0.5f ) * interfaces.m_globals->m_frametime;
-
-		if ( log.m_alpha < 0.f && ( interfaces.m_globals->m_curtime - log.m_time > 5.f ) ) {
 			m_logs.pop_back ( );
 			continue;
 		}

@@ -25,6 +25,7 @@ bool hooks_t::init ( ) {
 	m_frame_stage_notify.create ( _frame_stage_notify, frame_stage_notify );
 	m_paint.create ( _paint, paint );
 	m_paint_traverse.create ( _paint_traverse, paint_traverse );
+	m_run_command.create ( _run_command, run_command );
 
 	/* create event handler. */
 	event_handler = std::make_unique < c_event_handler > ( );
@@ -44,6 +45,9 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 		return;
 
 	g.m_ucmd = cmd;
+
+	prediction.predict ( cmd );
+	prediction.restore ( cmd );
 }
 
 void __fastcall hooks_t::frame_stage_notify ( void *ecx, void *edx, client_frame_stage_t stage ) {
@@ -57,8 +61,8 @@ void __fastcall hooks_t::frame_stage_notify ( void *ecx, void *edx, client_frame
 	hooks.m_frame_stage_notify.get_old_method< decltype ( &frame_stage_notify ) > ( )( ecx, edx, stage );
 }
 
-void __fastcall hooks_t::run_command ( player_t *player, ucmd_t *ucmd, c_move_helper *move_helper ) {
-	hooks.m_run_command.get_old_method < decltype ( &run_command ) > ( )( player, ucmd, move_helper );
+void __fastcall hooks_t::run_command ( void *ecx, void *edx, player_t *player, ucmd_t *ucmd, c_move_helper *move_helper ) {
+	hooks.m_run_command.get_old_method < decltype ( &run_command ) > ( )( ecx, edx, player, ucmd, move_helper );
 
 	/* set move helper pointer. */
 	interfaces.m_move_helper = move_helper;
