@@ -22,6 +22,7 @@
 #include "vector.h"
 #include "matrix.h"
 #include "math.h"
+#include "crc32.h"
 #include "usercmd.h"
 #include "sdk.h"
 #include "interfaces.h"

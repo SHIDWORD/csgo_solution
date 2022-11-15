@@ -7,7 +7,7 @@ struct inputpred_t {
 	uintptr_t m_prediction_player;
 	uintptr_t m_prediction_seed;
 	bool m_in_prediction;
-	bool m_first_time_predicted;
+	bool m_is_first_time_predicted;
 	float m_curtime;
 	float m_frametime;
 	c_move_data data;

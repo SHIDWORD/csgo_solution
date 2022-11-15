@@ -46,10 +46,21 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 
 	g.m_ucmd = cmd;
 
-	prediction.predict ( cmd );
-	prediction.restore ( cmd );
-}
+	//if ( g.m_local && g.m_local->alive( ) ) {
+	//	auto data = interfaces.m_weapon_system->weapon_data ( g.m_local->weapon ( )->item_definition_index ( ) );
 
+	//	if ( data )
+	//		interfaces.m_cvar->console_printf ( x_ ( "weapon info: %p\n" ), data );
+	//}
+
+	prediction.predict ( cmd ); {
+		/* run prediction dependent code here. */
+	} prediction.restore ( cmd );
+
+	verified->m_cmd = *cmd;
+	verified->m_crc = cmd->get_checksum ( );
+}
+ 
 void __fastcall hooks_t::frame_stage_notify ( void *ecx, void *edx, client_frame_stage_t stage ) {
 	if ( stage != frame_start )
 		g.m_stage = stage;

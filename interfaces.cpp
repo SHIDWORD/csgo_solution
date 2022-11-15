@@ -25,8 +25,9 @@ bool interfaces_t::init ( ) {
 	m_panel			= create_interface< c_panel * > ( x_ ( "vgui2.dll" ), x_ ( "VGUI_Panel009" ) );
 
 	/* get addresses. */
-	m_input		 = pattern::find ( x_ ( "client.dll" ), x_ ( "B9 ? ? ? ? FF 60 60" ) ).add ( 1 ).deref ( ).as< c_input * > ( );
-	m_globals	 = pattern::find ( x_ ( "client.dll" ), x_ ( "A1 ? ? ? ? FF 70 04 68 ? ? ? ? 56 E8 ? ? ? ? 8B 06" ) ).add ( 1 ).deref ( ).deref ( ).as< c_global_vars * > ( );
+	m_input			= pattern::find ( x_ ( "client.dll" ), x_ ( "B9 ? ? ? ? FF 60 60" ) ).add ( 1 ).deref ( ).as< c_input * > ( );
+	m_weapon_system = pattern::find ( x_ ( "client.dll" ), x_ ( "8B 35 ? ? ? ? FF 10 0F B7 C0" ) ).add ( 2 ).deref ( ).as< c_weapon_system * > ( );
+	m_globals		= pattern::find ( x_ ( "client.dll" ), x_ ( "A1 ? ? ? ? FF 70 04 68 ? ? ? ? 56 E8 ? ? ? ? 8B 06" ) ).add ( 1 ).deref ( ).deref ( ).as< c_global_vars * > ( );
 
 	return true;
 }

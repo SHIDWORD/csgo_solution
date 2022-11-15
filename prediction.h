@@ -51,12 +51,6 @@ class c_prediction {
 		_finish_move = 21,
 	};
 public:
-	PAD ( 4 );
-	uint32_t m_last_ground;
-	bool m_in_prediction;
-	bool m_first_time_predicted;			
-	bool m_engine_paused;
-public:
 	void check_moving_ground ( player_t *player, double frametime ) {
 		using check_moving_ground_fn = void ( __thiscall * )( void *, player_t *, double );
 		util::get_method < check_moving_ground_fn > ( this, indices_t::_check_moving_ground )( this, player, frametime );
@@ -76,6 +70,12 @@ public:
 		using finish_move_fn = void ( __thiscall * )( void *, player_t *, ucmd_t *, c_move_data * );
 		util::get_method < finish_move_fn > ( this, indices_t::_finish_move )( this, player, ucmd, move );
 	}
+	
+	PAD ( 4 );
+	std::uintptr_t m_last_ground;
+	bool m_in_prediction;
+	bool m_is_first_time_predicted;			
+	bool m_engine_paused;
 };
 
 class c_game_movement {

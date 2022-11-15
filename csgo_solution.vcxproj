@@ -23,6 +23,7 @@
     <ClInclude Include="client.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="convar.h" />
+    <ClInclude Include="crc32.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entlist.h" />
@@ -62,6 +63,7 @@
     <ClInclude Include="vector.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="visuals.h" />
+    <ClInclude Include="weaponsystem.h" />
     <ClInclude Include="xorstr.h" />
   </ItemGroup>
   <ItemGroup>
