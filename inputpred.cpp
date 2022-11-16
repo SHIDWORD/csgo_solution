@@ -2,7 +2,7 @@
 
 inputpred_t prediction { };
 
-void post_think ( player_t* ent ) {
+void post_think ( player_t *ent ) {
 	interfaces.m_mdl_cache->begin_lock ( );
 
 	static auto post_think_vphysics = pattern::find ( x_ ( "client.dll" ), x_ ( "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB" ) ).as< bool ( __thiscall * )( player_t * ) > ( );
@@ -33,8 +33,8 @@ void inputpred_t::predict ( ucmd_t *ucmd ) {
 	g.m_local->last_cmd ( ) = *ucmd;
 
 	if ( !m_prediction_player || !m_prediction_seed ) {
-		m_prediction_seed = pattern::find ( x_ ( "client.dll" ), x_ ( "8B 47 40 A3" ) ).add ( 4 ).deref ( ).as< uintptr_t > ( );
-		m_prediction_player = pattern::find ( x_ ( "client.dll" ), x_ ( "0F 5B C0 89 35" ) ).add ( 5 ).deref ( ).as< uintptr_t > ( );
+		m_prediction_seed = pattern::find ( x_ ( "client.dll" ), x_ ( "8B 47 40 A3" ) ).add ( 4 ).deref ( ).as< std::uintptr_t > ( );
+		m_prediction_player = pattern::find ( x_ ( "client.dll" ), x_ ( "0F 5B C0 89 35" ) ).add ( 5 ).deref ( ).as< std::uintptr_t > ( );
 	}
 
 	*reinterpret_cast< int * >( m_prediction_seed ) = ucmd ? ucmd->m_random_seed : -1;
@@ -62,14 +62,11 @@ void inputpred_t::predict ( ucmd_t *ucmd ) {
 		weapon_t *weapon = g.m_local->weapon ( );
 
 		if ( weapon ) {
-			//auto data = interfaces.m_weapon_system->weapon_data ( weapon->item_definition_index ( ) );
+			auto data = weapon->data ( );
 
-			//if ( data )
-				//g.m_local->select_item ( data->m_weapon_name, ucmd->m_weaponsubtype );
+			if ( data )
+				g.m_local->select_item ( data->m_weapon_name, ucmd->m_weaponsubtype );
 		}
-
-		//if ( weapon )
-			//g.m_local->select_item ( weapon->GetName ( ), ucmd->m_weaponsubtype );
 	}
 
 	const auto buttons_changed = ucmd->m_buttons ^ g.m_local->button_last ( );

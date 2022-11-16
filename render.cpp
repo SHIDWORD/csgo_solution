@@ -3,6 +3,8 @@
 render_t render { };
 
 void render_t::init ( ) {
+	interfaces.m_engine->get_screen_size ( m_width, m_height );
+
 	/* init font map */
 	fonts [ fonts_t::default_font ] = font_data_t ( x_ ( "Verdana" ), 12, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
 	fonts [ fonts_t::log_font ] = font_data_t ( x_ ( "Calibri" ), 14, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
@@ -16,9 +18,6 @@ void render_t::init ( ) {
 		if ( font_data.m_data != 0 )
 			interfaces.m_surface->set_font_glyph_set ( font_data.m_data, font_data.m_name, font_data.m_height, font_data.m_weight, font_data.m_blur, 0, font_data.m_flags );
 	}
-
-	/* save screen size in-case we change our screen size. */
-	interfaces.m_engine->get_screen_size ( m_width, m_height );
 }
 
 void render_t::filled_rect ( int x, int y, int w, int h, color_t color ) {

@@ -12,7 +12,7 @@ void __stdcall cheat_thread ( ) {
 	hooks.init ( );
 
 	/* notify our user. */
-	logs.push_log ( x_ ( "Injected successfully.\n" ), { 255, 255, 255 } );
+	notify.push_log ( x_ ( "Injected successfully.\n" ), { 255, 255, 255 } );
 
 	/* unload our hack. */
 	while ( !LI_FN ( GetAsyncKeyState )( VK_END ) )

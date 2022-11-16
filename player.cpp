@@ -5,35 +5,6 @@ void player_t::set_sequence ( int sequence ) {
 	util::get_method < set_sequence_fn > ( this, 219 )( this, sequence );
 }
 
-void player_t::select_item ( const char *name, int sub_type ) {
-	using select_item_fn = void ( __thiscall * )( void *, const char *, int );
-	util::get_method < select_item_fn > ( this, 330 )( this, name, sub_type );
-}
-
-void player_t::think ( ) {
-	using think_fn = void ( __thiscall * )( void * );
-	util::get_method < think_fn > ( this, 139 )( this );
-}
-
-void player_t::pre_think ( ) {
-	using pre_think_fn = void ( __thiscall * )( void * );
-	util::get_method < pre_think_fn > ( this, 318 )( this );
-}
-
-vec_t player_t::shoot_pos ( ) {
-	vec_t pos;
-	util::get_method < void ( __thiscall * )( void *, const vec_t & ) > ( this, 169 )( this, pos );
-
-	if ( use_new_animstate ( ) ) {
-		auto state = animstate ( );
-
-		if ( state )
-			modify_eye_position ( state, &pos );
-	}
-
-	return pos;
-}
-
 void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) {
 	const auto e = state->m_player;
 
@@ -67,6 +38,35 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 	}
 
 	interfaces.m_mdl_cache->end_lock ( );
+}
+
+void player_t::select_item ( const char *name, int sub_type ) {
+	using select_item_fn = void ( __thiscall * )( void *, const char *, int );
+	util::get_method < select_item_fn > ( this, 330 )( this, name, sub_type );
+}
+
+void player_t::think ( ) {
+	using think_fn = void ( __thiscall * )( void * );
+	util::get_method < think_fn > ( this, 139 )( this );
+}
+
+void player_t::pre_think ( ) {
+	using pre_think_fn = void ( __thiscall * )( void * );
+	util::get_method < pre_think_fn > ( this, 318 )( this );
+}
+
+vec_t player_t::shoot_pos ( ) {
+	vec_t pos;
+	util::get_method < void ( __thiscall * )( void *, const vec_t & ) > ( this, 169 )( this, pos );
+
+	if ( use_new_animstate ( ) ) {
+		auto state = animstate ( );
+
+		if ( state )
+			modify_eye_position ( state, &pos );
+	}
+
+	return pos;
 }
 
 void player_t::set_abs_origin ( const vec_t &abs_origin ) {

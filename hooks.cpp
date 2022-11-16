@@ -6,9 +6,9 @@ std::unique_ptr < c_event_handler > event_handler = nullptr;
 
 bool hooks_t::init ( ) {
 	m_hwnd = LI_FN ( FindWindowA )( x_ ( "Valve001" ), nullptr );
-	
-	/* set wndproc hook. */
-	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );	
+
+	/* wndproc hook. */
+	m_old_wndproc = reinterpret_cast < WNDPROC > ( SetWindowLongPtrA ( m_hwnd, GWLP_WNDPROC, LONG_PTR ( wnd_proc ) ) );
 
 	if ( MH_Initialize ( ) != MH_OK )
 		throw std::runtime_error ( x_ ( "failed to initialize minhook." ) );
@@ -20,14 +20,14 @@ bool hooks_t::init ( ) {
 	const auto _paint_traverse = util::get_method < void * > ( interfaces.m_panel, 41 );
 	const auto _run_command = util::get_method < void * > ( interfaces.m_prediction, 19 );
 
-	/* create detours. */
+	/* detours. */
 	m_create_move_proxy.create ( _create_move, create_move_proxy );
 	m_frame_stage_notify.create ( _frame_stage_notify, frame_stage_notify );
 	m_paint.create ( _paint, paint );
 	m_paint_traverse.create ( _paint_traverse, paint_traverse );
 	m_run_command.create ( _run_command, run_command );
 
-	/* create event handler. */
+	/* init event handler. */
 	event_handler = std::make_unique < c_event_handler > ( );
 
 	MH_EnableHook ( MH_ALL_HOOKS );
@@ -46,13 +46,6 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 
 	g.m_ucmd = cmd;
 
-	//if ( g.m_local && g.m_local->alive( ) ) {
-	//	auto data = interfaces.m_weapon_system->weapon_data ( g.m_local->weapon ( )->item_definition_index ( ) );
-
-	//	if ( data )
-	//		interfaces.m_cvar->console_printf ( x_ ( "weapon info: %p\n" ), data );
-	//}
-
 	prediction.predict ( cmd ); {
 		/* run prediction dependent code here. */
 	} prediction.restore ( cmd );
@@ -60,7 +53,7 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 	verified->m_cmd = *cmd;
 	verified->m_crc = cmd->get_checksum ( );
 }
- 
+
 void __fastcall hooks_t::frame_stage_notify ( void *ecx, void *edx, client_frame_stage_t stage ) {
 	if ( stage != frame_start )
 		g.m_stage = stage;
@@ -97,7 +90,7 @@ void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
 	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
 		interfaces.m_surface->paint ( [ & ] {
 			visuals.paint ( );
-			logs.paint ( );
+			notify.paint ( );
 		} );
 	}
 }
@@ -116,9 +109,9 @@ __declspec( naked ) void __fastcall hooks_t::create_move_proxy ( void *ecx, void
 		push dword ptr [ input_sample_frame_time ];
 		push dword ptr [ seq_num ];
 		call create_move
-		pop	ebx
-		pop	ebp
-		retn 0Ch
+			pop	ebx
+			pop	ebp
+			retn 0Ch
 	}
 }
 

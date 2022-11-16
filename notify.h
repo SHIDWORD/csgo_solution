@@ -1,17 +1,17 @@
 #pragma once
 
-struct log_t {
-	const char* m_message;
+struct notify_text_t {
+	const char *m_message;
 	color_t m_color;
 	float m_time;
 	int m_alpha;
 };
 
-struct logs_t {
+struct notify_t {
 	void push_log ( const char *msg, color_t col );
 	void paint ( );
 
-	std::deque < log_t > m_logs;
+	std::deque < notify_text_t > m_notify_text;
 };
 
-extern logs_t logs;
+extern notify_t notify;

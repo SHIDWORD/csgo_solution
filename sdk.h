@@ -6,7 +6,6 @@
 #include "panel.h"
 #include "events.h"
 #include "prediction.h"
-#include "weaponsystem.h"
 #include "global_vars_base.h"
 #include "color.h"
 #include "localize.h"

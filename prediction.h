@@ -16,31 +16,31 @@ public:
 	bool m_first_run_of_functions : 1;
 	bool m_game_code_moved_player : 1;
 	bool m_no_air_control : 1;
-	unsigned long m_player_handle;	         
-	int	m_impulse_command;	   
-	vec_t m_view_angles;	     
-	vec_t m_abs_view_angles;	     
-	int	m_buttons;			  
-	int m_old_buttons;		  
+	unsigned long m_player_handle;
+	int	m_impulse_command;
+	vec_t m_view_angles;
+	vec_t m_abs_view_angles;
+	int	m_buttons;
+	int m_old_buttons;
 	float m_fmove;
 	float m_smove;
 	float m_umove;
 	float m_max_speed;
 	float m_client_max_speed;
-	vec_t m_vel;			 		   
+	vec_t m_vel;
 	vec_t m_trailing_vel;
 	float m_trailing_vel_time;
-	vec_t m_ang;			 
+	vec_t m_ang;
 	vec_t m_old_ang;
-	float m_step_height;	      
-	vec_t m_wish_vel;		      
-	vec_t m_jump_vel;		     
+	float m_step_height;
+	vec_t m_wish_vel;
+	vec_t m_jump_vel;
 	vec_t m_constraint_center;
 	float m_constraint_radius;
 	float m_constraint_width;
 	float m_constraint_speed_factor;
-	bool m_constraint_past_radius;		                
-	vec_t m_abs_origin;		 
+	bool m_constraint_past_radius;
+	vec_t m_abs_origin;
 };
 
 class c_prediction {
@@ -70,11 +70,11 @@ public:
 		using finish_move_fn = void ( __thiscall * )( void *, player_t *, ucmd_t *, c_move_data * );
 		util::get_method < finish_move_fn > ( this, indices_t::_finish_move )( this, player, ucmd, move );
 	}
-	
+
 	PAD ( 4 );
 	std::uintptr_t m_last_ground;
 	bool m_in_prediction;
-	bool m_is_first_time_predicted;			
+	bool m_is_first_time_predicted;
 	bool m_engine_paused;
 };
 

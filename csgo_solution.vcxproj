@@ -25,7 +25,7 @@
     <ClInclude Include="convar.h" />
     <ClInclude Include="crc32.h" />
     <ClInclude Include="engine.h" />
-    <ClInclude Include="entity.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="entlist.h" />
     <ClInclude Include="events.h" />
     <ClInclude Include="event_handler.h" />
@@ -44,7 +44,7 @@
     <ClInclude Include="interfaces.h" />
     <ClInclude Include="lazy_importer.h" />
     <ClInclude Include="localize.h" />
-    <ClInclude Include="logging.h" />
+    <ClInclude Include="notify.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="mdl_cache.h" />
@@ -63,12 +63,12 @@
     <ClInclude Include="vector.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="visuals.h" />
-    <ClInclude Include="weaponsystem.h" />
+    <ClInclude Include="weapon.h" />
     <ClInclude Include="xorstr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.c" />
-    <ClCompile Include="entity.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="event_handler.cpp" />
     <ClCompile Include="hde\hde32.c" />
@@ -77,12 +77,13 @@
     <ClCompile Include="hooks.cpp" />
     <ClCompile Include="inputpred.cpp" />
     <ClCompile Include="interfaces.cpp" />
-    <ClCompile Include="logging.cpp" />
+    <ClCompile Include="notify.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="netvars.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="trampoline.c" />
     <ClCompile Include="visuals.cpp" />
+    <ClCompile Include="weapon.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

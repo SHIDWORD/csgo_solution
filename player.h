@@ -121,7 +121,6 @@ public:
 	OFFSET ( ucmd_t *, current_cmd, 0x3348 );
 	OFFSET ( ucmd_t , last_cmd, 0x3298 );
 	OFFSET ( int, buttons, 0x31FC );
-
 	NETVAR ( int, team, "DT_BaseEntity", "m_iTeamNum" );
 	NETVAR ( int, effects, "DT_BaseEntity", "m_fEffects" );
 
@@ -167,14 +166,8 @@ public:
 	weapon_t *weapon ( );
 	vec_t shoot_pos ( );
 	void pre_think ( );
-	void post_think ( );
 	void think ( );
 	void set_sequence ( int sequence );
 	bool physics_run_think ( int think_method );
 	void bone_pos ( int bone, vec_t &out, vec_t &q );
-};
-
-class weapon_t : public entity_t {
-public:
-	NETVAR ( short, item_definition_index , "DT_BaseAttributableItem", "m_iItemDefinitionIndex" );
 };

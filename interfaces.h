@@ -18,7 +18,6 @@ struct interfaces_t {
 	c_move_helper *m_move_helper = nullptr;
 	c_prediction *m_prediction = nullptr;
 	c_game_movement *m_game_movement = nullptr;
-	c_weapon_system *m_weapon_system = nullptr;
 };
 
 extern interfaces_t interfaces;
