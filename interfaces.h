@@ -1,9 +1,10 @@
 #pragma once
 
+class c_engine_trace;
+
 struct interfaces_t {
 	bool init ( );
 
-	/* interface list. */
 	c_engine *m_engine = nullptr;
 	c_client *m_client = nullptr;
 	c_input *m_input = nullptr;
@@ -18,6 +19,8 @@ struct interfaces_t {
 	c_move_helper *m_move_helper = nullptr;
 	c_prediction *m_prediction = nullptr;
 	c_game_movement *m_game_movement = nullptr;
+	c_phys *m_phys_props = nullptr;
+	c_engine_trace *m_trace = nullptr;
 };
 
 extern interfaces_t interfaces;

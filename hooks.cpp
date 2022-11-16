@@ -44,6 +44,17 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 	if ( ( !cmd || !cmd->m_command_number ) || !verified || !is_active )
 		return;
 
+	if ( g.m_local ) {
+		auto weapon = g.m_local->weapon ( );
+
+		if ( weapon ) {
+			auto data = weapon->data ( );
+
+			if ( data )
+				printf ( " noob\n" );
+		}
+	}
+
 	g.m_ucmd = cmd;
 
 	prediction.predict ( cmd ); {

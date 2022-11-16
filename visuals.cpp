@@ -33,7 +33,7 @@ bool visuals_t::get_box_bounds ( player_t *ent, box_t &box ) {
 	vec_t flb, brt, blb, frt, frb, brb, blt, flt;
 	float left, top, right, bottom;
 
-	auto abs_origin = ent->abs_origin ( );
+	auto abs_origin = ent->origin ( );
 
 	auto min = ent->mins ( ) + abs_origin;
 	auto max = ent->maxs ( ) + abs_origin;

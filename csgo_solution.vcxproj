@@ -25,6 +25,7 @@
     <ClInclude Include="convar.h" />
     <ClInclude Include="crc32.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="penetration.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="entlist.h" />
     <ClInclude Include="events.h" />
@@ -57,7 +58,9 @@
     <ClInclude Include="render.h" />
     <ClInclude Include="sdk.h" />
     <ClInclude Include="surface.h" />
+    <ClInclude Include="surfacedata.h" />
     <ClInclude Include="tinyformat.h" />
+    <ClInclude Include="trace.h" />
     <ClInclude Include="trampoline.h" />
     <ClInclude Include="usercmd.h" />
     <ClInclude Include="vector.h" />
@@ -68,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.c" />
+    <ClCompile Include="penetration.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="event_handler.cpp" />

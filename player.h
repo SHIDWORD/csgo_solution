@@ -11,7 +11,7 @@ struct animstate_t {
 	float m_eye_position_smooth_lerp;
 	float m_strafe_change_weight_smooth_fall_off;
 	PAD ( 60 );
-	int	 m_cached_model_idx;
+	int m_cached_model_idx;
 	float m_step_height_left;
 	float m_step_height_right;
 	weapon_t *m_weapon_last_bone_setup;
@@ -113,6 +113,16 @@ enum flags_t : int {
 
 class entity_t {
 public:
+	__forceinline const vec_t &origin ( ) {
+		using abs_origin_fn = const vec_t &( __thiscall * )( void * );
+		return util::get_method < abs_origin_fn > ( this, 10 )( this );
+	}
+
+	__forceinline const vec_t &angles ( ) {
+		using abs_angles_fn = const vec_t &( __thiscall * )( void * );
+		return util::get_method < abs_angles_fn > ( this, 11 )( this );
+	}
+
 	OFFSET ( void *, renderable, 0x4 );
 	OFFSET ( void *, networkable, 0x8 );
 	OFFSET ( bool, dormant, 0xED );
@@ -123,20 +133,14 @@ public:
 	OFFSET ( int, buttons, 0x31FC );
 	NETVAR ( int, team, "DT_BaseEntity", "m_iTeamNum" );
 	NETVAR ( int, effects, "DT_BaseEntity", "m_fEffects" );
-
-	__forceinline const vec_t &abs_origin ( ) {
-		using abs_origin_fn = const vec_t &( __thiscall * )( void * );
-		return util::get_method < abs_origin_fn > ( this, 10 )( this );
-	}
-
-	__forceinline const vec_t &abs_angles ( ) {
-		using abs_angles_fn = const vec_t &( __thiscall * )( void * );
-		return util::get_method < abs_angles_fn > ( this, 11 )( this );
-	}
 };
 
 class player_t : public entity_t {
 public:
+	__forceinline bool alive ( ) {
+		return ( life_state ( ) == life_states_t::life_alive ) && health ( ) > 0;
+	}
+
 	OFFSET ( int, button_pressed, 0x3200 );
 	OFFSET ( int, button_last, 0x3208 );
 	OFFSET ( int, button_released, 0x3204 );
@@ -154,10 +158,6 @@ public:
 	OFFSET ( bool, use_new_animstate, 0x9B14 );
 	OFFSET ( int, button_forced, 0x3344 );
 
-	__forceinline bool alive ( ) {
-		return ( life_state ( ) == life_states_t::life_alive ) && health ( ) > 0;
-	}
-
 	void set_abs_origin ( const vec_t &abs_origin );
 	void set_abs_angles ( const vec_t &abs_angles );
 	int lookup_bone ( const char *name );
@@ -166,6 +166,7 @@ public:
 	weapon_t *weapon ( );
 	vec_t shoot_pos ( );
 	void pre_think ( );
+	bool is_player ( );
 	void think ( );
 	void set_sequence ( int sequence );
 	bool physics_run_think ( int think_method );
