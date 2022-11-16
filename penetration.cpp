@@ -1,4 +1,4 @@
-#include "includes.h"
+﻿#include "includes.h"
 
 penetration_t penetration { };
 
@@ -47,7 +47,7 @@ fire_data_t penetration_t::run ( const vec_t src, const vec_t end, player_t *ent
 		return { };
 
 	trace_filter_t filter { };
-	
+
 	filter.m_skip = g.m_local;
 	bool result = fire_bullet ( data, src, end, &filter, info, ent );
 
@@ -71,19 +71,19 @@ bool penetration_t::fire_bullet ( const weapon_info_t *data, vec_t src, vec_t po
 	if ( angles.is_zero ( ) || !weapon )
 		return false;
 
-	const auto weapon_data = weapon->data ( );
+	const auto data = weapon->data ( );
 
-	if ( !weapon_data )
+	if ( !data )
 		return false;
 
 	auto dir = math.ang_vector ( angles );
 
-	fire_info.m_damage = weapon_data->m_damage;
+	fire_info.m_damage = data->m_damage;
 
 	float damage_modifier = 0.5f;
 	float penetration_power = 0.f;
-	float distance = weapon_data->m_range;
-	float penetration = weapon_data->m_penetration;
+	float distance = data->m_range;
+	float penetration = data->m_penetration;
 	float penetration_modifier = 1.f;
 	int penetrate_count = fire_info.m_penetrate_count;
 	bool hit_grate = false;
@@ -96,7 +96,7 @@ bool penetration_t::fire_bullet ( const weapon_info_t *data, vec_t src, vec_t po
 		trace_t trace { };
 		ray_t ray { };
 
-		fire_info.m_penetrate_count = weapon_data->m_range - fire_info.m_trace_length;
+		fire_info.m_penetrate_count = data->m_range - fire_info.m_trace_length;
 
 		vec_t end = src + dir * fire_info.m_remaining_length;
 
@@ -116,7 +116,7 @@ bool penetration_t::fire_bullet ( const weapon_info_t *data, vec_t src, vec_t po
 
 			damage *= std::powf ( data->m_range_modifier, fire_info.m_trace_length * 0.002f );
 
-			fire_info.m_damage = scale_dmg ( ent, damage, data->m_armor_ratio, trace.m_hitgroup );
+			fire_info.m_damage = scale_dmg ( trace.m_hitgroup, ent, data->m_armor_ratio, damage );
 
 			return true;
 		}
@@ -140,7 +140,23 @@ bool penetration_t::fire_bullet ( const weapon_info_t *data, vec_t src, vec_t po
 }
 
 bool penetration_t::is_breakable_ent ( player_t *ent ) {
-	// REBUILD
+	static auto _is_breakable = pattern::find ( x_ ( "client.dll" ), x_ ( "E8 ? ? ? ? 84 C0 75 A1" ) ).rel32 ( );
+
+	static auto m_takedamage_offset = _is_breakable.add ( 38 ).deref ( ).as< uint32_t > ( );
+
+	if ( !ent || !ent->idx ( ) )
+		return false;
+
+	auto &takedmg = *reinterpret_cast< uint8_t * > ( reinterpret_cast< uintptr_t >( ent ) + m_takedamage_offset );
+
+	const auto backup_takedmg = takedmg;
+	takedmg = 2;
+
+	const auto ret = _is_breakable.as< bool ( __thiscall * )( entity_t * ) > ( ) ( ent );
+
+	takedmg = backup_takedmg;
+
+	return ret;
 }
 
 bool penetration_t::trace_to_exit ( vec_t start, vec_t dir, vec_t &end, trace_t &trace_enter, trace_t &trace_exit, float step_size, float max_distance ) {
@@ -342,7 +358,78 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 	}
 }
 
-float penetration_t::scale_dmg ( player_t *player, float damage, float armor_ratio, int hitgroup ) {
+float penetration_t::scale_dmg ( int hitgroup, player_t *ent, float armor_ratio, float damage ) {
+	int armor = ent->armor ( );
+
+	/* https://www.onetap.com/members/llama.1/ */
+	float calc_ratio, heavy_ratio, bonus_ratio;
+	float old_damage, calc_damage, new_damage;
+	float result;
+
+	result = hitgroup - 1;
+	
+	switch ( hitgroup ) {
+	case hitgroup_head:
+		damage *= 4.0f;
+		break;
+	case hitgroup_stomach:
+		damage *= 1.25f;
+		break;
+	case hitgroup_leftleg:
+	case hitgroup_rightleg:
+		damage *= 0.75f;
+		break;
+	default:
+		break;
+	}
+	
+	if ( armor > 0 ) {
+		switch ( hitgroup ) {
+		case hitgroup_generic:
+		case hitgroup_chest:
+		case hitgroup_stomach:
+		case hitgroup_leftarm:
+		case hitgroup_rightarm:
+		case 8:
+			goto LABEL_15;
+		case hitgroup_head:
+			result = ent->helmet ( );
+
+			if ( !result )
+				return result;
+		LABEL_15:
+			result = ent->heavy_armor ( );
+
+			if ( result && hitgroup == 1 ) {
+				calc_ratio = armor_ratio * 0.5f;
+				damage = damage + damage;
+			LABEL_22:
+				old_damage = damage;
+				bonus_ratio = 0.33f;
+				heavy_ratio = 0.33f;
+				calc_damage = ( float ) ( calc_ratio * 0.5f ) * damage;
+				new_damage = calc_damage * 0.85f;
+				goto LABEL_24;
+			}
+			heavy_ratio = 0.5;
+			bonus_ratio = 1.0;
+			calc_ratio = armor_ratio * 0.5;
+			if ( result )
+				goto LABEL_22;
+			old_damage = damage;
+			calc_damage = calc_ratio * damage;
+			new_damage = calc_damage;
+		LABEL_24:
+			if ( ( float ) ( ( float ) ( old_damage - calc_damage ) * ( float ) ( heavy_ratio * bonus_ratio ) ) > ( float ) armor )
+				new_damage = old_damage - ( float ) ( ( float ) armor / heavy_ratio );
+			damage = new_damage;
+			break;
+		default:
+			return result;
+		}
+	}
+
+	return std::floor ( damage );
 }
 
 void penetration_t::clip_trace_to_players ( const vec_t &start, const vec_t &end, unsigned int mask, trace_filter_t *filter, trace_t *tr ) {

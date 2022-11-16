@@ -125,6 +125,7 @@ public:
 
 	OFFSET ( void *, renderable, 0x4 );
 	OFFSET ( void *, networkable, 0x8 );
+	OFFSET ( int, idx, 0x64 );
 	OFFSET ( bool, dormant, 0xED );
 	OFFSET ( float, fall_vel, 0xC09 );
 	OFFSET ( int, think_tick, 0xFC );
@@ -155,6 +156,9 @@ public:
 	NETVAR_ADD ( vec_t, mins, "DT_BaseEntity", "m_Collision", 0x8 );
 	NETVAR_ADD ( vec_t, maxs, "DT_BaseEntity", "m_Collision", 0x14 );
 	NETVAR ( uint32_t, weapon_handle, "DT_BaseCombatCharacter", "m_hActiveWeapon" );
+	NETVAR ( int, armor, "DT_CSPlayer", "m_ArmorValue" );
+	NETVAR ( bool, helmet, "DT_CSPlayer", "m_bHasHelmet" );
+	NETVAR ( bool, heavy_armor, "DT_CSPlayer", "m_bHasHeavyArmor" );
 	OFFSET ( bool, use_new_animstate, 0x9B14 );
 	OFFSET ( int, button_forced, 0x3344 );
 
@@ -163,6 +167,7 @@ public:
 	int lookup_bone ( const char *name );
 	void select_item ( const char *name, int sub_type );
 	void modify_eye_position ( animstate_t *state, vec_t *input_eye_pos );
+	bool class_name ( const char *name );
 	weapon_t *weapon ( );
 	vec_t shoot_pos ( );
 	void pre_think ( );
