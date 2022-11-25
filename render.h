@@ -2,7 +2,8 @@
 
 enum class fonts_t {
 	default_font,
-	log_font
+	log_font,
+	debug_font
 };
 
 struct font_data_t {

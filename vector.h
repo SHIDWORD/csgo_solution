@@ -25,84 +25,88 @@ public:
 		this->z = z;
 	}
 
-	float &operator( )( const size_t index ) {
-		return ( ( float * ) this ) [ index ];
-	}
-
-	const float &operator( )( const size_t index ) const {
-		return ( ( float * ) this ) [ index ];
-	}
-
 	vec_t ( const float *v ) {
 		this->x = v [ 0 ]; this->y = v [ 1 ]; this->z = v [ 2 ];
 	}
 
-	vec_t operator+( const vec_t &other ) const {
-		return vec_t ( x + other.x, y + other.y, z + other.z );
-	}
-
-	vec_t operator*=( const vec_t &other ) {
-		this->x *= other.x;
-		this->y *= other.y;
-		this->z *= other.z;
-
-		return *this;
-	}
-
-	vec_t operator*=( float other ) {
-		this->x *= other;
-		this->y *= other;
-		this->z *= other;
-
-		return *this;
-	}
-
-	vec_t operator-( const vec_t &other ) const {
-		return vec_t ( x - other.x, y - other.y, z - other.z );
-	}
-
-	vec_t operator*( const vec_t &other ) {
-		return { x * other.x, y * other.y, z * other.z };
-	}
-
-	vec_t operator*( float other ) const {
-		return { x * other, y * other, z * other };
-	}
-
-	vec_t operator/( const vec_t &other ) {
-		return { x / other.x, y / other.y, z / other.z };
-	}
-
-	vec_t operator*( const float &other ) {
-		return { x * other, y * other, z * other };
-	}
-
-	vec_t operator/( const float &other ) {
-		return { x / other, y / other, z / other };
-	}
-
-	vec_t operator+=( const vec_t &v ) {
-		x += v.x;
-		y += v.y;
-		z += v.z;
-
-		return *this;
-	}
-
-	vec_t operator-=( const vec_t &v ) {
-		x -= v.x;
-		y -= v.y;
-		z -= v.z;
-
-		return *this;
-	}
-
-	float &operator[ ]( int i ) {
+	float &operator[]( int i ) {
 		return ( ( float * ) this ) [ i ];
 	}
 
-	float operator[ ]( int i ) const {
+	float operator[]( int i ) const {
 		return ( ( float * ) this ) [ i ];
+	}
+
+	void zero ( ) {
+		this->x = this->y = this->z = 0.0f;
+	}
+
+	bool operator==( const vec_t &src ) const {
+		return ( src.x == this->x ) && ( src.y == y ) && ( src.z == z );
+	}
+
+	bool operator!=( const vec_t &src ) const {
+		return ( src.x != this->x ) || ( src.y != y ) || ( src.z != z );
+	}
+
+	vec_t &operator+=( const vec_t &v ) {
+		this->x += v.x; this->y += v.y; this->z += v.z;
+
+		return *this;
+	}
+
+	vec_t &operator-=( const vec_t &v ) {
+		this->x -= v.x; this->y -= v.y; this->z -= v.z;
+
+		return *this;
+	}
+
+	vec_t &operator*=( float fl ) {
+		this->x *= fl;
+		this->y *= fl;
+		this->z *= fl;
+
+		return *this;
+	}
+
+	vec_t &operator*=( const vec_t &v ) {
+		this->x *= v.x;
+		this->y *= v.y;
+		this->z *= v.z;
+
+		return *this;
+	}
+
+	vec_t &operator/=( const vec_t &v ) {
+		this->x /= v.x;
+		this->y /= v.y;
+		this->z /= v.z;
+
+		return *this;
+	}
+
+	vec_t &operator+=( float fl ) {
+		this->x += fl;
+		this->y += fl;
+		this->z += fl;
+
+		return *this;
+	}
+
+	vec_t &operator/=( float fl ) {
+		this->x /= fl;
+		this->y /= fl;
+		this->z /= fl;
+
+		return *this;
+	}
+
+	vec_t &operator-=( float fl ) {
+		this->x -= fl;
+		this->y -= fl;
+		this->z -= fl;
+
+		return *this;
 	}
 
 	float length_2d ( ) const {
@@ -127,34 +131,41 @@ public:
 		float length = this->length ( );
 
 		if ( length != 0.0f ) {
-			this->x /= length;
-			this->y /= length;
-			this->z /= length;
+			this->x /= length + std::numeric_limits< float >::epsilon ( );
+			this->y /= length + std::numeric_limits< float >::epsilon ( );
+			this->z /= length + std::numeric_limits< float >::epsilon ( );
 		}
 	}
 
-	void normalize_place ( ) {
-		auto res = *this;
+	float normalize_place ( ) {
 		auto radius = std::sqrtf ( x * x + y * y + z * z );
-		auto iradius = 1.0f / ( radius + FLT_EPSILON );
+		auto iradius = 1.0f / ( radius + std::numeric_limits< float >::epsilon ( ) );
 
-		res.x *= iradius;
-		res.y *= iradius;
-		res.z *= iradius;
+		x *= iradius;
+		y *= iradius;
+		z *= iradius;
+
+		return radius;
 	}
 
 	vec_t normalized ( ) const {
-		auto vec = *this;
-		vec.normalize ( );
-		return vec;
+		auto res = *this;
+		auto l = res.length ( );
+
+		if ( l != 0.0f )
+			res /= l;
+		else
+			res.x = res.y = res.z = 0.0f;
+
+		return res;
 	}
 
 	vec_t cross ( const vec_t &other ) const {
 		return { this->y * other.z - this->z * other.y, this->z * other.x - this->x * other.z, this->x * other.y - this->y * other.x };
 	}
 
-	float dot ( const vec_t &other ) const {
-		return this->x * other.x + this->y * other.y + this->z * other.z;
+	float dot ( const vec_t &vec ) const {
+		return { this->x * vec.x + this->y * vec.y + this->z * vec.z };
 	}
 
 	float length_2d_sqr ( ) const {
@@ -166,7 +177,49 @@ public:
 	}
 
 	float x, y, z;
+
+	vec_t &operator=( const vec_t &vec ) {
+		this->x = vec.x; this->y = vec.y; this->z = vec.z;
+
+		return *this;
+	}
+
+	vec_t operator-( ) const {
+		return vec_t ( -this->x, -this->y, -this->z );
+	}
+
+	vec_t operator+( const vec_t &v ) const {
+		return vec_t ( this->x + v.x, this->y + v.y, this->z + v.z );
+	}
+
+	vec_t operator-( const vec_t &v ) const {
+		return vec_t ( this->x - v.x, this->y - v.y, this->z - v.z );
+	}
+
+	vec_t operator*( float fl ) const {
+		return vec_t ( this->x * fl, this->y * fl, this->z * fl );
+	}
+
+	vec_t operator*( const vec_t &v ) const {
+		return vec_t ( this->x * v.x, this->y * v.y, this->z * v.z );
+	}
+
+	vec_t operator/( float fl ) const {
+		return vec_t ( this->x / fl, this->y / fl, this->z / fl );
+	}
+
+	vec_t operator/( const vec_t &v ) const {
+		return vec_t ( this->x / v.x, this->y / v.y, this->z / v.z );
+	}
 };
+
+__forceinline vec_t operator*( float lhs, const vec_t &rhs ) {
+	return rhs * lhs;
+}
+
+__forceinline vec_t operator/( float lhs, const vec_t &rhs ) {
+	return rhs / lhs;
+}
 
 class __declspec( align( 16 ) ) vec_aligned_t : public vec_t {
 public:

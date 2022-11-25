@@ -40,6 +40,43 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 	interfaces.m_mdl_cache->end_lock ( );
 }
 
+bool player_t::is_enemy ( player_t *other ) {
+	static cvar_t* mp_teammates_are_enemies = interfaces.m_cvar->find_var ( HASH ( "mp_teammates_are_enemies" ) );
+
+	if ( !this || !other || this == other )
+		return false;
+
+	if ( interfaces.m_game_type->get_game_type ( ) == game_type_t::danger_zone ) {
+		const auto my_team = survival_team ( );
+
+		if ( my_team == -1 )
+			return true;
+
+		return my_team != other->survival_team ( );
+	}
+	else {
+		const auto my_team = static_cast< int >( team ( ) ) - 2;
+		auto v11 = false;
+
+		if ( my_team ) {
+			if ( my_team != 1 )
+				return false;
+
+			v11 = other->team ( ) == 2;
+		}
+		else
+			v11 = other->team ( ) == 3;
+
+		if ( v11 )
+			return true;
+
+		return mp_teammates_are_enemies->get_bool ( );
+	}
+
+	return false;
+}
+
+
 void player_t::select_item ( const char *name, int sub_type ) {
 	using select_item_fn = void ( __thiscall * )( void *, const char *, int );
 	util::get_method < select_item_fn > ( this, 330 )( this, name, sub_type );

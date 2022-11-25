@@ -7,6 +7,7 @@
 #include "events.h"
 #include "prediction.h"
 #include "surfacedata.h"
+#include "game_type.h"
 #include "global_vars_base.h"
 #include "color.h"
 #include "localize.h"

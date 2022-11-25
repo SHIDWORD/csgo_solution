@@ -22,6 +22,7 @@ bool interfaces_t::init ( ) {
 	m_entlist = create_interface< c_entlist * > ( x_ ( "client.dll" ), x_ ( "VClientEntityList003" ) );
 	m_cvar = create_interface< c_convar * > ( x_ ( "vstdlib.dll" ), x_ ( "VEngineCvar007" ) );
 	m_event_mgr = create_interface< c_game_event_mgr * > ( x_ ( "engine.dll" ), x_ ( "GAMEEVENTSMANAGER002" ) );
+	m_game_type = create_interface< c_game_type * > ( x_ ( "matchmaking.dll" ), x_ ( "VENGINE_GAMETYPES_VERSION002" ) );
 	m_panel = create_interface< c_panel * > ( x_ ( "vgui2.dll" ), x_ ( "VGUI_Panel009" ) );
 	m_phys_props = create_interface< c_phys * > ( x_ ( "vphysics.dll" ), x_ ( "VPhysicsSurfaceProps001" ) );
 	m_input = pattern::find ( x_ ( "client.dll" ), x_ ( "B9 ? ? ? ? FF 60 60" ) ).add ( 1 ).deref ( ).as< c_input * > ( );

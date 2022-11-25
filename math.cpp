@@ -13,48 +13,40 @@ void math_t::vec_transform ( const vec_t &in1, const matrix3x4_t &in2, vec_t &ou
 }
 
 float math_t::distance_to_ray ( const vec_t &pos, const vec_t &ray_start, const vec_t &ray_end, float *along, vec_t *point_on_ray ) {
-	vec_t to = ( pos - ray_start );
+	const vec_t to = ( pos - ray_start );
 	vec_t dir = ( ray_end - ray_start );
 
-	float length = dir.length_2d ( );
-	float range_along = to.dot ( dir ) / length;
+	float length = dir.normalize_place ( );
+	float range_along = dir.dot ( to );
 
 	if ( along )
 		*along = range_along;
 
 	float range;
 
-	if ( range_along < 0.0f ) {
-		range = -( pos - ray_start ).length_2d ( );
-
-		if ( point_on_ray )
-			*point_on_ray = ray_start;
-	}
-	else if ( range_along > length ) {
-		range = -( pos - ray_end ).length_2d ( );
-
-		if ( point_on_ray )
-			*point_on_ray = ray_end;
-	}
-	else {
-		vec_t on_ray = ray_start + dir * range_along;
-		range = ( pos - on_ray ).length_2d ( );
-
-		if ( point_on_ray )
-			*point_on_ray = on_ray;
-	}
+	if ( range_along < 0.0f )
+		range = -( to ).length ( );
+	else if ( range_along > length )
+		range = -( pos - ray_end ).length ( );
+	else
+		range = ( pos - ( dir * range_along + ray_start ) ).length ( );
 
 	return range;
 }
 
-vec_t math_t::ang_vector ( vec_t angle ) {
-	vec_t vec { };
+vec_t math_t::angle_vector ( vec_t angle ) {
+	vec_t ret;
 
-	vec.x = cos ( angle.y ) * cos ( angle.x );
-	vec.y = sin ( angle.y ) * cos ( angle.x );
-	vec.z = sin ( angle.x );
+	float sp, sy, cp, cy;
 
-	return vec;
+	sin_cos ( deg2rad ( angle.y ), &sy, &cy );
+	sin_cos ( deg2rad ( angle.x ), &sp, &cp );
+
+	ret.x = cp * cy;
+	ret.y = cp * sy;
+	ret.z = -sp;
+
+	return ret;
 }
 
 void math_t::sin_cos ( float radians, float *sin, float *cos ) {
@@ -62,59 +54,18 @@ void math_t::sin_cos ( float radians, float *sin, float *cos ) {
 	*cos = std::cos ( radians );
 }
 
-void math_t::ang_vector ( const vec_t &angle, vec_t *forward, vec_t *right, vec_t *up ) {
-	float sr, sp, sy, cr, cp, cy;
-
-	sin_cos ( deg2rad ( angle [ 1 ] ), &sy, &cy );
-	sin_cos ( deg2rad ( angle [ 0 ] ), &sp, &cp );
-	sin_cos ( deg2rad ( angle [ 2 ] ), &sr, &cr );
-
-	if ( forward ) {
-		forward->x = cp * cy;
-		forward->y = cp * sy;
-		forward->z = -sp;
-	}
-
-	if ( right ) {
-		right->x = ( -1 * sr * sp * cy + -1 * cr * -sy );
-		right->y = ( -1 * sr * sp * sy + -1 * cr * cy );
-		right->z = -1 * sr * cp;
-	}
-
-	if ( up ) {
-		up->x = ( cr * sp * cy + -sr * -sy );
-		up->y = ( cr * sp * sy + -sr * cy );
-		up->z = cr * cp;
-	}
-}
-
 float math_t::dot_product ( const vec_t &a, const vec_t &b ) {
 	return { a.x * b.x + a.y * b.y + a.z * b.z };
 }
 
-vec_t math_t::vec_angle ( vec_t vec ) {
-	vec_t ret;
-
-	if ( vec.x == 0.0f && vec.y == 0.0f ) {
-		ret.x = ( vec.z > 0.0f ) ? 270.0f : 90.0f;
-		ret.y = 0.0f;
-	}
-	else {
-		ret.x = rad2deg ( std::atan2f ( -vec.z, vec.length_2d ( ) ) );
-		ret.y = rad2deg ( std::atan2f ( vec.y, vec.x ) );
-
-		if ( ret.y < 0.0f )
-			ret.y += 360.0f;
-
-		if ( ret.x < 0.0f )
-			ret.x += 360.0f;
-	}
-
-	ret.z = 0.0f;
-
-	clamp ( ret );
-
-	return ret;
+vec_t math_t::vector_angle ( vec_t vec ) {
+	constexpr float pi = 3.14159265358979323846;
+	
+	return vec_t (
+		-atan2 ( vec.z, vec.length_2d ( ) ) * 180 / pi,
+		atan2 ( vec.y, vec.x ) * 180 / pi,
+		0
+	);
 }
 
 void math_t::clamp ( vec_t &ang ) {
@@ -145,7 +96,7 @@ float math_t::normalize ( float ang ) {
 }
 
 vec_t math_t::calc_angle ( vec_t src, vec_t dst ) {
-	auto ret = vec_angle ( dst - src );
+	auto ret = vector_angle ( dst - src );
 
 	clamp ( ret );
 

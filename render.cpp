@@ -8,6 +8,7 @@ void render_t::init ( ) {
 	/* init font map */
 	fonts [ fonts_t::default_font ] = font_data_t ( x_ ( "Verdana" ), 12, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
 	fonts [ fonts_t::log_font ] = font_data_t ( x_ ( "Calibri" ), 14, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
+	fonts [ fonts_t::debug_font ] = font_data_t ( x_ ( "Courier New" ), 15, 400, 0, font_flags_t::font_flag_outline );
 
 	/* create all fonts */
 	for ( auto &font : fonts ) {

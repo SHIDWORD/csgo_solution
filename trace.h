@@ -105,6 +105,7 @@ enum dispsurf_t {
 };
 
 class player_t;
+class entity_t;
 
 enum trace_type_t {
     trace_everything = 0,
@@ -222,7 +223,7 @@ struct ray_t {
 struct surface_t {
     const char *m_name;
     short m_props;
-    unsigned short m_flags;
+    std::uint8_t m_flags;
 };
 
 class base_trace_t {
@@ -233,46 +234,59 @@ public:
     bool is_disp_surface_prop1 ( void ) { return ( ( m_flags & dispsurf_flag_surfprop1 ) != 0 ); }
     bool is_disp_surface_prop2 ( void ) { return ( ( m_flags & dispsurf_flag_surfprop2 ) != 0 ); }
 public:
-    vec_t		    m_startpos;
-    vec_t		    m_endpos;
-    plane_t		    m_plane;
-    float			m_fraction;
-    int				m_contents;
-    unsigned short	m_flags;
-    bool			m_allsolid;
-    bool			m_startsolid;
+	vec_t		    m_startpos; // 0x0000
+	vec_t		    m_endpos; // 0x0010
+	plane_t		    m_plane; // 0x0020
+	float			m_fraction; // 0x0030
+	uint32_t 		m_contents; // 0x0034
+	uint16_t	    m_flags; // 0x0038
+	bool			m_allsolid; // 0x003A
+	bool			m_startsolid; // 0x003B
 
     base_trace_t ( ) { }
-
-private:
-    base_trace_t ( const base_trace_t &other );
 };
 
 class trace_t : public base_trace_t {
 public:
     __forceinline bool did_hit_world ( ) const {
-        return m_hit_ent == interfaces.m_entlist->get< void * > ( 0 );
+        return m_hit_entity == interfaces.m_entlist->get< void * > ( 0 );
     }
 
     __forceinline bool did_hit_non_world_ent ( ) const {
-        return m_hit_ent != nullptr && !did_hit_world ( );
+        return m_hit_entity != nullptr && !did_hit_world ( );
     }
 
     __forceinline bool did_hit ( ) const {
         return m_fraction < 1 || m_allsolid || m_startsolid;
     }
 
-    float m_fraction_left_solid;
-    surface_t m_surface;
-    int m_hitgroup;
-    short m_phys_bone;
-    unsigned short m_world_idx;
-    player_t *m_hit_ent;
-    int	m_hitbox;
+	float m_fractionleftsolid; // 0x003C
+	surface_t m_surface; // 0x0040
+	int m_hitgroup; // 0x0048
+	short m_physicsbone; // 0x004C
+	uint16_t m_world_surface_index; // 0x004E
+	entity_t *m_hit_entity; // 0x0050
+	int m_hitbox; // 0x0054
 
-    trace_t ( ) : m_hit_ent ( nullptr ) { }
-private:
-    trace_t ( const trace_t &other );
+    trace_t ( ) : m_hit_entity ( nullptr ) { }
+	
+    trace_t ( const trace_t &other ) :
+        m_fractionleftsolid ( other.m_fractionleftsolid ),
+        m_surface ( other.m_surface ),
+        m_hitgroup ( other.m_hitgroup ),
+        m_physicsbone ( other.m_physicsbone ),
+        m_world_surface_index ( other.m_world_surface_index ),
+        m_hit_entity ( other.m_hit_entity ),
+        m_hitbox ( other.m_hitbox ) {
+        m_startpos = other.m_startpos;
+        m_endpos = other.m_endpos;
+        m_plane = other.m_plane;
+        m_fraction = other.m_fraction;
+        m_contents = other.m_contents;
+        m_flags = other.m_flags;
+        m_allsolid = other.m_allsolid;
+        m_startsolid = other.m_startsolid;
+    }
 };
 
 class c_engine_trace {

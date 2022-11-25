@@ -1,14 +1,14 @@
 #pragma once
 
 struct notify_text_t {
-	const char *m_message;
+	std::string m_message;
 	color_t m_color;
 	float m_time;
 	int m_alpha;
 };
 
 struct notify_t {
-	void push_log ( const char *msg, color_t col );
+	void push_log ( const std::string &msg, color_t col );
 	void paint ( );
 
 	std::deque < notify_text_t > m_notify_text;

@@ -13,9 +13,8 @@ struct math_t {
 		return res;
 	}
 
-	vec_t ang_vector ( vec_t angle );
-	vec_t vec_angle ( vec_t vec );
-	void ang_vector ( const vec_t &angle, vec_t *forward, vec_t *right, vec_t *up );
+	vec_t angle_vector ( vec_t angle );
+	vec_t vector_angle ( vec_t vector );
 	void sin_cos ( float radians, float *sin, float *cos );
 	void clamp ( vec_t &ang );
 	float dot_product ( const vec_t &a, const vec_t &b );

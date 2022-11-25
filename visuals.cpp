@@ -3,29 +3,54 @@
 visuals_t visuals { };
 
 void visuals_t::paint ( ) {
-	for ( int i = 1; i <= interfaces.m_globals->m_max_clients; i++ ) {
-		auto pl = interfaces.m_entlist->get< player_t * > ( i );
+	if ( !g.m_local || !g.m_local->alive ( ) )
+		return;
 
-		if ( !pl || pl->dormant ( ) || !pl->alive ( ) || pl->team ( ) == g.m_local->team ( ) )
+	auto weapon = g.m_local->weapon ( );
+
+	if ( !weapon )
+		return;
+
+	auto data = weapon->data ( );
+
+	if ( !data )
+		return;
+
+	for ( int i = 1; i <= interfaces.m_globals->m_max_clients; ++i ) {
+		auto player = interfaces.m_entlist->get< player_t * > ( i );
+
+		if ( !player || player->team ( ) == g.m_local->team ( ) || !player->alive ( ) || player->dormant ( ) )
 			continue;
 
-		box_t box;
-		if ( !get_box_bounds ( pl, box ) )
-			continue;
+		auto pos = player->shoot_pos ( );
 
-		player_info_t info;
-		if ( !interfaces.m_engine->get_player_info ( i, &info ) )
-			continue;
+		auto data = penetration.run ( g.m_local->shoot_pos ( ), pos, player );
 
-		/* render box. */
-		render.outlined_rect ( box.x - 1, box.y - 1, box.w + 2, box.h + 2, { 0, 0, 0, 200 } );
-		render.outlined_rect ( box.x, box.y, box.w, box.h, { 255, 255, 255, 200 } );
-		render.outlined_rect ( box.x + 1, box.y + 1, box.w - 2, box.h - 2, { 0, 0, 0, 200 } );
+		vec_t screen_from, screen_to;
 
-		auto dim = render.get_text_size ( fonts [ fonts_t::default_font ].m_data, info.m_name );
+		render.world_to_screen ( pos, screen_to );
+		render.world_to_screen ( g.m_local->shoot_pos ( ), screen_from );
 
-		/* render name. */
-		render.string ( fonts [ fonts_t::default_font ].m_data, box.x + ( box.w / 2 ) - ( dim.x / 2 ), box.y - fonts [ fonts_t::default_font ].m_height - 1, { 255, 255, 255, 200 }, info.m_name );
+		const auto end = data.m_end;
+
+		vec_t screen_end;
+		render.world_to_screen ( end, screen_end );
+		render.line ( screen_from.x, screen_from.y, screen_end.x, screen_end.y, { 255, 255, 255 } );
+
+		//trace_t tr;
+		//trace_filter_t filter;
+		//filter.m_skip = g.m_local;
+
+		//interfaces.m_trace->trace_ray ( ray, 0x4600400B, &filter, &tr );
+
+		//vec_t screen_endpos;
+		//render.world_to_screen ( tr.m_endpos, screen_endpos );
+
+		//vec_t screen_origin;
+		//render.world_to_screen ( g.m_local->origin( ), screen_origin );
+
+		//render.line ( screen_origin.x, screen_origin.y, screen_endpos.x, screen_endpos.y, { 0, 255, 0 } );
+		render.string ( fonts [ fonts_t::debug_font ].m_data, screen_to.x, screen_to.y, { 255, 255, 255, 200 }, tinyformat::format ( "Damage: %.f", data.m_out_damage ).c_str ( ) );
 	}
 }
 
@@ -33,10 +58,10 @@ bool visuals_t::get_box_bounds ( player_t *ent, box_t &box ) {
 	vec_t flb, brt, blb, frt, frb, brb, blt, flt;
 	float left, top, right, bottom;
 
-	auto abs_origin = ent->origin ( );
+	auto origin = ent->origin ( );
 
-	auto min = ent->mins ( ) + abs_origin;
-	auto max = ent->maxs ( ) + abs_origin;
+	auto min = ent->mins ( ) + origin;
+	auto max = ent->maxs ( ) + origin;
 
 	vec_t points [ ] = {
 		vec_t ( min.x, min.y, min.z ),
@@ -80,7 +105,6 @@ bool visuals_t::get_box_bounds ( player_t *ent, box_t &box ) {
 			top = arr [ i ].y;
 	}
 
-	/* state the box bounds. */
 	box.x = static_cast< int >( left );
 	box.y = static_cast< int >( top );
 	box.w = static_cast< int >( right - left );

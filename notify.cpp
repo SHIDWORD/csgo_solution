@@ -2,9 +2,9 @@
 
 notify_t notify { };
 
-void notify_t::push_log ( const char *msg, color_t col ) {
+void notify_t::push_log ( const std::string &msg, color_t col ) {
 	interfaces.m_cvar->console_color_printf ( { 202, 153, 255 }, x_ ( "[ hack ] " ) );
-	interfaces.m_cvar->console_color_printf ( col, msg );
+	interfaces.m_cvar->console_color_printf ( col, msg.data ( ) );
 
 	m_notify_text.push_front ( { msg, col, interfaces.m_globals->m_curtime, 255 } );
 }
@@ -26,6 +26,6 @@ void notify_t::paint ( ) {
 			continue;
 		}
 
-		render.string ( fonts [ fonts_t::log_font ].m_data, 5, 6 + i * fonts [ fonts_t::log_font ].m_height, { notify.m_color, notify.m_alpha }, notify.m_message );
+		render.string ( fonts [ fonts_t::log_font ].m_data, 5, 6 + i * fonts [ fonts_t::log_font ].m_height, { notify.m_color, notify.m_alpha }, notify.m_message.data ( ) );
 	}
 }

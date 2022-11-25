@@ -30,7 +30,7 @@ enum {
 	char_tex_warpshield = 'Z'
 };
 
-fire_data_t penetration_t::run ( const vec_t src, const vec_t end, player_t *ent ) {
+fire_data_t penetration_t::run ( const vec_t src, const vec_t end, player_t *ent, bool is_zeus, weapon_info_t *info_override ) {
 	fire_data_t info { };
 
 	if ( !ent )
@@ -41,7 +41,7 @@ fire_data_t penetration_t::run ( const vec_t src, const vec_t end, player_t *ent
 	if ( !weapon )
 		return { };
 
-	const auto data = weapon->data ( );
+	const auto data = info_override == nullptr ? weapon->data ( ) : info_override;
 
 	if ( !data )
 		return { };
@@ -49,90 +49,76 @@ fire_data_t penetration_t::run ( const vec_t src, const vec_t end, player_t *ent
 	trace_filter_t filter { };
 
 	filter.m_skip = g.m_local;
-	bool result = fire_bullet ( data, src, end, &filter, info, ent );
+	bool result = simulate_fire_bullet ( data, src, end, &filter, info, is_zeus, ent );
 
-	if ( result && info.m_damage < 1.f )
+	if ( result && info.m_out_damage < 1.f )
 		return { };
 
 	return info;
 }
 
-bool penetration_t::fire_bullet ( const weapon_info_t *data, vec_t src, vec_t pos, trace_filter_t *filter, fire_data_t &fire_info, player_t *ent, bool point ) {
+bool penetration_t::simulate_fire_bullet ( const weapon_info_t *data, vec_t src, vec_t pos, trace_filter_t *filter, fire_data_t &fire_info, bool is_zeus, player_t *ent ) {
 	static cvar_t *sv_penetration_type = interfaces.m_cvar->find_var ( HASH ( "sv_penetration_type" ) );
 
 	fire_info.m_penetrate_count = 4;
-	fire_info.m_trace_length = 0.0f;
 
-	auto weapon = g.m_local->weapon ( );
-	auto angles = math.vec_angle ( pos - src );
-
-	angles.normalize ( );
-
-	if ( angles.is_zero ( ) || !weapon )
-		return false;
-
-	const auto data = weapon->data ( );
-
-	if ( !data )
-		return false;
-
-	auto dir = math.ang_vector ( angles );
-
-	fire_info.m_damage = data->m_damage;
-
-	float damage_modifier = 0.5f;
-	float penetration_power = 0.f;
-	float distance = data->m_range;
 	float penetration = data->m_penetration;
-	float penetration_modifier = 1.f;
-	int penetrate_count = fire_info.m_penetrate_count;
-	bool hit_grate = false;
-	float damage = 0.f;
+	float current_distance = 0.f, damage_modifier = 0.5f, penetration_power = 0.0f, penetration_modifier = 1.0f;
+	float weapon_range = data->m_range;
+
+	vec_t dir = ( pos - src ).normalized ( );
 
 	if ( sv_penetration_type->get_int ( ) == 1 )
 		penetration_power = penetration;
 
-	while ( ( fire_info.m_penetrate_count > 0 ) && ( fire_info.m_damage >= 1.0f ) ) {
-		trace_t trace { };
+	float damage = static_cast< float > ( data->m_damage );
+	int penetration_count = fire_info.m_penetrate_count;
+
+	trace_t tr { };
+
+	while ( ( fire_info.m_penetrate_count > 0 ) && ( damage > 1.0f ) ) {
+		vec_t end = src + dir * ( weapon_range - current_distance );
+
 		ray_t ray { };
-
-		fire_info.m_penetrate_count = data->m_range - fire_info.m_trace_length;
-
-		vec_t end = src + dir * fire_info.m_remaining_length;
-
 		ray.init ( src, end );
 
-		interfaces.m_trace->trace_ray ( ray, 0x4600400B, filter, &trace );
-		clip_trace_to_players ( src, end + dir * 40.f, 0x4600400B, filter, &trace );
+		interfaces.m_trace->trace_ray ( ray, 0x4600400B, filter, &tr );
+		clip_trace_to_players ( ent, src, end + dir * 40.f, 0x4600400B, filter, &tr );
 
-		if ( trace.m_fraction == 1.0f )
-			return false;
+		if ( tr.m_fraction == 1.0f )
+			break;
 
-		if ( ( trace.m_hitgroup <= 7 ) && ( trace.m_hitgroup > 0 ) ) {
-			if ( !trace.m_hit_ent || ( trace.m_hit_ent != ent ) )
+		fire_info.m_end = tr.m_endpos;
+
+		current_distance += tr.m_fraction * ( weapon_range - current_distance );
+		damage *= std::powf ( data->m_range_modifier, ( current_distance / 500.f ) );
+
+		auto surface_data = interfaces.m_phys_props->get_surface_data ( tr.m_surface.m_props );
+		penetration_modifier = surface_data->m_game.m_penetration_modifier;
+
+		if ( current_distance > 3000.f || penetration_modifier < 0.1f )
+			break;
+
+		if ( tr.m_hit_entity && ( tr.m_hitgroup >= 0 && tr.m_hitgroup <= 7 ) ) {
+			if ( !tr.m_hit_entity || tr.m_hit_entity != ent )
 				break;
 
-			fire_info.m_trace_length += trace.m_fraction * fire_info.m_remaining_length;
-
-			damage *= std::powf ( data->m_range_modifier, fire_info.m_trace_length * 0.002f );
-
-			fire_info.m_damage = scale_dmg ( trace.m_hitgroup, ent, data->m_armor_ratio, damage );
+			fire_info.m_out_damage = scale_dmg ( ent, damage, data->m_armor_ratio, tr.m_hitgroup, is_zeus );
+			fire_info.m_hitbox = tr.m_hitbox;
+			fire_info.m_hitgroup = tr.m_hitgroup;
 
 			return true;
 		}
 
-		auto surface_data = interfaces.m_phys_props->get_surface_data ( trace.m_surface.m_props );
-
 		int enter_material = surface_data->m_game.m_material;
 
 		damage_modifier = surface_data->m_game.m_damage_modifier;
-		penetration_modifier = surface_data->m_game.m_penetration_modifier;
 		penetration = data->m_penetration;
-		hit_grate = ( trace.m_contents & contents_t::contents_grate ) != 0;
 
-		float damage = fire_info.m_damage;
+		bool hit_grate = ( tr.m_contents & contents_t::contents_grate ) != 0;
+		float damage = fire_info.m_out_damage;
 
-		if ( handle_bullet_penetration ( ent, penetration, enter_material, hit_grate, trace, dir, surface_data, penetration_modifier, damage_modifier, penetration_power, penetrate_count, src, distance, fire_info.m_trace_length, damage ) )
+		if ( handle_bullet_penetration ( ent, penetration, enter_material, hit_grate, tr, dir, surface_data, penetration_modifier, damage_modifier, penetration_power, penetration_count, src, weapon_range, fire_info.m_trace_length, damage ) )
 			break;
 	}
 
@@ -186,7 +172,7 @@ bool penetration_t::trace_to_exit ( vec_t start, vec_t dir, vec_t &end, trace_t 
 				ray_t ray { };
 				trace_filter_t filter { };
 
-				filter.m_skip = trace_exit.m_hit_ent;
+				filter.m_skip = trace_exit.m_hit_entity;
 				ray.init ( end, start );
 
 				interfaces.m_trace->trace_ray ( ray, 0x600400B, &filter, &trace_enter );
@@ -201,7 +187,7 @@ bool penetration_t::trace_to_exit ( vec_t start, vec_t dir, vec_t &end, trace_t 
 				bool start_is_no_draw = !!( trace_enter.m_surface.m_flags & surf_t::surf_nodraw );
 				bool exit_is_no_draw = !!( trace_exit.m_surface.m_flags & surf_t::surf_nodraw );
 
-				if ( exit_is_no_draw && is_breakable_ent ( trace_exit.m_hit_ent ) && is_breakable_ent ( trace_enter.m_hit_ent ) ) {
+				if ( exit_is_no_draw && is_breakable_ent ( static_cast< player_t * >( trace_enter.m_hit_entity ) ) && is_breakable_ent ( static_cast< player_t * >( trace_enter.m_hit_entity ) ) ) {
 					end = trace_exit.m_endpos;
 					return true;
 				}
@@ -216,7 +202,7 @@ bool penetration_t::trace_to_exit ( vec_t start, vec_t dir, vec_t &end, trace_t 
 					}
 				}
 			}
-			else if ( trace_enter.did_hit_non_world_ent ( ) && is_breakable_ent ( trace_enter.m_hit_ent ) ) {
+			else if ( trace_enter.did_hit_non_world_ent ( ) && is_breakable_ent ( static_cast< player_t * >( trace_enter.m_hit_entity ) ) ) {
 				trace_exit = trace_enter;
 				trace_exit.m_endpos = start + ( dir * 1.0f );
 
@@ -246,7 +232,7 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 	vec_t penetration_end;
 	trace_t exit_trace;
 
-	if ( !trace_to_exit ( tr.m_endpos, direction, penetration_end, tr, exit_trace, 4, 90 ) ) {
+	if ( !trace_to_exit ( tr.m_endpos, direction, penetration_end, tr, exit_trace, 4.0f, 90.0f ) ) {
 		if ( ( interfaces.m_trace->get_point_contents ( tr.m_endpos, mask_t::mask_shot_hull ) & mask_t::mask_shot_hull ) == 0 ) {
 			failed_penetrate = true;
 		}
@@ -256,6 +242,7 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 		return true;
 
 	surfacedata_t *exit_surface_data = interfaces.m_phys_props->get_surface_data ( exit_trace.m_surface.m_props );
+
 	int exit_material = exit_surface_data->m_game.m_material;
 
 	if ( sv_penetration_type->get_int ( ) == 1 ) {
@@ -271,7 +258,7 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 
 			damage_modifier = 0.99f;
 		}
-		else if ( enter_material == char_tex_flesh && ff_damage_reduction_bullets->get_float ( ) == 0 && tr.m_hit_ent && tr.m_hit_ent->is_player ( ) && tr.m_hit_ent->team ( ) == ent->team ( ) ) {
+		else if ( enter_material == char_tex_flesh && ff_damage_reduction_bullets->get_float ( ) == 0 && ( ent && tr.m_hit_entity && static_cast< player_t * >( tr.m_hit_entity )->is_player ( ) && tr.m_hit_entity->team ( ) == ent->team ( ) ) ) {
 			if ( ff_damage_bullet_penetration->get_float ( ) == 0 ) {
 				penetration_modifier = 0;
 				return true;
@@ -334,10 +321,8 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 		}
 
 		if ( enter_material == exit_material ) {
-			if ( exit_material == char_tex_wood ||
-				exit_material == char_tex_metal ) {
+			if ( exit_material == char_tex_wood || exit_material == char_tex_metal )
 				penetration_modifier *= 2;
-			}
 		}
 
 		float trace_distance = ( exit_trace.m_endpos - tr.m_endpos ).length ( );
@@ -358,81 +343,93 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 	}
 }
 
-float penetration_t::scale_dmg ( int hitgroup, player_t *ent, float armor_ratio, float damage ) {
-	int armor = ent->armor ( );
+float penetration_t::scale_dmg ( player_t *player, float damage, float armor_ratio, int hitgroup, bool is_zeus ) {
+	static cvar_t *mp_damage_scale_ct_body = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_ct_body" ) );
+	static cvar_t *mp_damage_scale_t_body = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_t_body" ) );
+	static cvar_t *mp_damage_scale_ct_head = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_ct_head" ) );
+	static cvar_t *mp_damage_scale_t_head = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_t_head" ) );
 
-	/* https://www.onetap.com/members/llama.1/ */
-	float calc_ratio, heavy_ratio, bonus_ratio;
-	float old_damage, calc_damage, new_damage;
-	float result;
+	float scale_body_damage = ( player->team ( ) == 3 ) ? mp_damage_scale_ct_body->get_float ( ) : mp_damage_scale_t_body->get_float ( );
+	float head_damage_scale = ( player->team ( ) == 3 ) ? mp_damage_scale_ct_head->get_float ( ) : mp_damage_scale_t_head->get_float ( );
 
-	result = hitgroup - 1;
-	
-	switch ( hitgroup ) {
-	case hitgroup_head:
-		damage *= 4.0f;
-		break;
-	case hitgroup_stomach:
-		damage *= 1.25f;
-		break;
-	case hitgroup_leftleg:
-	case hitgroup_rightleg:
-		damage *= 0.75f;
-		break;
-	default:
-		break;
-	}
-	
-	if ( armor > 0 ) {
+	static auto is_armored = [ ] ( player_t *player, int hitgroup ) -> bool {
+		if ( player->armor ( ) <= 0 )
+			return false;
+
 		switch ( hitgroup ) {
-		case hitgroup_generic:
-		case hitgroup_chest:
-		case hitgroup_stomach:
-		case hitgroup_leftarm:
-		case hitgroup_rightarm:
-		case 8:
-			goto LABEL_15;
-		case hitgroup_head:
-			result = ent->helmet ( );
-
-			if ( !result )
-				return result;
-		LABEL_15:
-			result = ent->heavy_armor ( );
-
-			if ( result && hitgroup == 1 ) {
-				calc_ratio = armor_ratio * 0.5f;
-				damage = damage + damage;
-			LABEL_22:
-				old_damage = damage;
-				bonus_ratio = 0.33f;
-				heavy_ratio = 0.33f;
-				calc_damage = ( float ) ( calc_ratio * 0.5f ) * damage;
-				new_damage = calc_damage * 0.85f;
-				goto LABEL_24;
-			}
-			heavy_ratio = 0.5;
-			bonus_ratio = 1.0;
-			calc_ratio = armor_ratio * 0.5;
-			if ( result )
-				goto LABEL_22;
-			old_damage = damage;
-			calc_damage = calc_ratio * damage;
-			new_damage = calc_damage;
-		LABEL_24:
-			if ( ( float ) ( ( float ) ( old_damage - calc_damage ) * ( float ) ( heavy_ratio * bonus_ratio ) ) > ( float ) armor )
-				new_damage = old_damage - ( float ) ( ( float ) armor / heavy_ratio );
-			damage = new_damage;
+		case hitgroup_t::hitgroup_generic:
+		case hitgroup_t::hitgroup_chest:
+		case hitgroup_t::hitgroup_stomach:
+		case hitgroup_t::hitgroup_leftarm:
+		case hitgroup_t::hitgroup_rightarm:
+			return true;
+			break;
+		case hitgroup_t::hitgroup_head:
+			if ( player->helmet ( ) )
+				return true;
 			break;
 		default:
-			return result;
+			break;
 		}
+
+		return false;
+	};
+
+	const int armor = player->armor ( );
+
+	if ( player->heavy_armor ( ) )
+		head_damage_scale *= 0.5f;
+
+	if ( !is_zeus )
+		/* TODO: scale upon weapon headshot multiplier. */
+		switch ( hitgroup ) {
+		case hitgroup_t::hitgroup_head:
+			damage *= 4.0f * head_damage_scale;
+			break;
+		case hitgroup_t::hitgroup_chest:
+			damage *= 1.0f * scale_body_damage;
+			break;
+		case hitgroup_t::hitgroup_stomach:
+			damage *= 1.25f * scale_body_damage;
+			break;
+		case hitgroup_t::hitgroup_leftarm:
+		case hitgroup_t::hitgroup_rightarm:
+			damage *= 1.0f * scale_body_damage;
+			break;
+		case hitgroup_t::hitgroup_leftleg:
+		case hitgroup_t::hitgroup_rightleg:
+			damage *= 0.75f * scale_body_damage;
+			break;
+		default:
+			break;
+		}
+
+	if ( is_armored ( player, hitgroup ) ) {
+		float armor_bonus = 0.5f, armor_ratio = 0.5f, heavy_armor_bonus = 1.0f;
+		bool has_heavy = player->heavy_armor ( );
+
+		if ( has_heavy ) {
+			armor_ratio *= 0.5f;
+			armor_bonus = 0.33f;
+			heavy_armor_bonus = 0.33f;
+		}
+
+		float damage_to_health = damage * armor_ratio;
+		float damage_to_armor = ( damage - damage_to_health ) * ( armor_bonus * heavy_armor_bonus );
+
+		if ( damage_to_armor > static_cast< float > ( armor ) )
+			damage_to_health = damage - static_cast< float > ( armor ) / armor_bonus;
+
+		damage = damage_to_health;
 	}
 
-	return std::floor ( damage );
+	return damage;
 }
 
-void penetration_t::clip_trace_to_players ( const vec_t &start, const vec_t &end, unsigned int mask, trace_filter_t *filter, trace_t *tr ) {
+void penetration_t::clip_trace_to_players ( player_t *player, const vec_t &start, const vec_t &end, unsigned int mask, trace_filter_t *filter, trace_t *tr ) {
+	if ( !player || !player->alive ( ) || player->dormant ( ) )
+		return;
+
 	trace_t player_trace;
 	ray_t ray;
 
@@ -441,27 +438,20 @@ void penetration_t::clip_trace_to_players ( const vec_t &start, const vec_t &end
 
 	ray.init ( start, end );
 
-	for ( int i = 1; i < interfaces.m_globals->m_max_clients; i++ ) {
-		auto player = interfaces.m_entlist->get< player_t * > ( i );
+	vec_t world_space_center = player->origin ( ) + ( ( player->mins ( ) + player->maxs ( ) ) * 0.5f );
 
-		if ( !player || !player->alive ( ) || player->dormant ( ) )
-			continue;
+	if ( filter && filter->should_hit_entity ( player, mask ) == false )
+		return;
 
-		vec_t world_space_center = player->origin ( ) + ( ( player->mins ( ) + player->maxs ( ) ) * 0.5f );
+	float range = math.distance_to_ray ( world_space_center, start, end );
 
-		if ( filter && filter->should_hit_entity ( player, mask ) == false )
-			continue;
+	if ( range < 0.0f || range > max_range )
+		return;
 
-		float range = math.distance_to_ray ( world_space_center, start, end );
+	interfaces.m_trace->clip_ray_to_entity ( ray, mask | contents_t::contents_hitbox, player, &player_trace );
 
-		if ( range < 0.0f || range > max_range )
-			continue;
-
-		interfaces.m_trace->clip_ray_to_entity ( ray, mask | contents_t::contents_hitbox, player, &player_trace );
-
-		if ( player_trace.m_fraction < smallest_fraction ) {
-			*tr = player_trace;
-			smallest_fraction = player_trace.m_fraction;
-		}
+	if ( player_trace.m_fraction < smallest_fraction ) {
+		*tr = player_trace;
+		smallest_fraction = player_trace.m_fraction;
 	}
 }

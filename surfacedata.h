@@ -32,12 +32,12 @@ struct surfacedata_t {
 };
 
 class c_phys {
+    enum indices_t : std::uintptr_t {
+		_get_surface_data = 5,
+    };
 public:
-    virtual int	parse_surface_data ( const char *file_name, const char *text_file ) = 0;
-    virtual int	surface_prop_count ( void ) const = 0;
-    virtual int	get_surface_index ( const char *surface_prop_name ) const = 0;
-    virtual void get_physics_properties ( int surface_data_index, float *density, float *thickness, float *friction, float *elasticity ) const = 0;
-    virtual surfacedata_t *get_surface_data ( int surface_data_index ) = 0;
-    virtual const char *get_string ( unsigned short surface_data_index ) const = 0;
-    virtual const char *get_prop_name ( int surface_data_index ) const = 0;
+    surfacedata_t *get_surface_data ( int idx ) {
+        using o_fn = surfacedata_t * ( __thiscall * )( void *, int );
+        return util::get_method< o_fn > ( this, indices_t::_get_surface_data )( this, idx );
+    }
 };

@@ -14,8 +14,11 @@ void c_event_handler::fire_game_event ( event_t *event ) {
 	if ( !event || !g.m_local )
 		return;
 
-	if ( !strcmp ( event->get_name ( ), "player_hurt" ) )
-		notify.push_log ( x_ ( "Hurt event.\n" ), { 255, 255, 255 } );
+	if ( !strcmp ( event->get_name ( ), "player_hurt" ) ) {
+		auto damage = event->get_int ( x_ ( "dmg_health" ) );
+
+		notify.push_log ( tfm::format ( "Hit for %i damage\n", damage ), { 140, 255, 142 } );
+	}
 }
 
 int c_event_handler::get_event_debug_id ( ) {

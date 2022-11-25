@@ -25,6 +25,7 @@
     <ClInclude Include="convar.h" />
     <ClInclude Include="crc32.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="game_type.h" />
     <ClInclude Include="penetration.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="entlist.h" />

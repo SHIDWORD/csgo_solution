@@ -113,12 +113,12 @@ enum flags_t : int {
 
 class entity_t {
 public:
-	__forceinline const vec_t &origin ( ) {
+	__forceinline const vec_t &abs_origin ( ) {
 		using abs_origin_fn = const vec_t &( __thiscall * )( void * );
 		return util::get_method < abs_origin_fn > ( this, 10 )( this );
 	}
 
-	__forceinline const vec_t &angles ( ) {
+	__forceinline const vec_t &abs_angles ( ) {
 		using abs_angles_fn = const vec_t &( __thiscall * )( void * );
 		return util::get_method < abs_angles_fn > ( this, 11 )( this );
 	}
@@ -134,6 +134,7 @@ public:
 	OFFSET ( int, buttons, 0x31FC );
 	NETVAR ( int, team, "DT_BaseEntity", "m_iTeamNum" );
 	NETVAR ( int, effects, "DT_BaseEntity", "m_fEffects" );
+	NETVAR ( vec_t, origin, "DT_BaseEntity", "m_vecOrigin" );
 };
 
 class player_t : public entity_t {
@@ -147,6 +148,7 @@ public:
 	OFFSET ( int, button_released, 0x3204 );
 	OFFSET ( int, button_disabled, 0x3340 );
 	OFFSET ( int, sequence, 0xA30 );
+	NETVAR ( int, survival_team, "DT_CSPlayer", "m_nSurvivalTeam" );
 	OFFSET ( animstate_t *, animstate, 0x9960 );
 	NETVAR ( int, health, "DT_BasePlayer", "m_iHealth" );
 	NETVAR ( life_states_t, life_state, "DT_BasePlayer", "m_lifeState" );
@@ -167,6 +169,7 @@ public:
 	int lookup_bone ( const char *name );
 	void select_item ( const char *name, int sub_type );
 	void modify_eye_position ( animstate_t *state, vec_t *input_eye_pos );
+	bool is_enemy ( player_t *other );
 	bool class_name ( const char *name );
 	weapon_t *weapon ( );
 	vec_t shoot_pos ( );
