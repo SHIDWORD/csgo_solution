@@ -3,55 +3,7 @@
 visuals_t visuals { };
 
 void visuals_t::paint ( ) {
-	if ( !g.m_local || !g.m_local->alive ( ) )
-		return;
 
-	auto weapon = g.m_local->weapon ( );
-
-	if ( !weapon )
-		return;
-
-	auto data = weapon->data ( );
-
-	if ( !data )
-		return;
-
-	for ( int i = 1; i <= interfaces.m_globals->m_max_clients; ++i ) {
-		auto player = interfaces.m_entlist->get< player_t * > ( i );
-
-		if ( !player || player->team ( ) == g.m_local->team ( ) || !player->alive ( ) || player->dormant ( ) )
-			continue;
-
-		auto pos = player->shoot_pos ( );
-
-		auto data = penetration.run ( g.m_local->shoot_pos ( ), pos, player );
-
-		vec_t screen_from, screen_to;
-
-		render.world_to_screen ( pos, screen_to );
-		render.world_to_screen ( g.m_local->shoot_pos ( ), screen_from );
-
-		const auto end = data.m_end;
-
-		vec_t screen_end;
-		render.world_to_screen ( end, screen_end );
-		render.line ( screen_from.x, screen_from.y, screen_end.x, screen_end.y, { 255, 255, 255 } );
-
-		//trace_t tr;
-		//trace_filter_t filter;
-		//filter.m_skip = g.m_local;
-
-		//interfaces.m_trace->trace_ray ( ray, 0x4600400B, &filter, &tr );
-
-		//vec_t screen_endpos;
-		//render.world_to_screen ( tr.m_endpos, screen_endpos );
-
-		//vec_t screen_origin;
-		//render.world_to_screen ( g.m_local->origin( ), screen_origin );
-
-		//render.line ( screen_origin.x, screen_origin.y, screen_endpos.x, screen_endpos.y, { 0, 255, 0 } );
-		render.string ( fonts [ fonts_t::debug_font ].m_data, screen_to.x, screen_to.y, { 255, 255, 255, 200 }, tinyformat::format ( "Damage: %.f", data.m_out_damage ).c_str ( ) );
-	}
 }
 
 bool visuals_t::get_box_bounds ( player_t *ent, box_t &box ) {

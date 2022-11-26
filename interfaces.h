@@ -17,6 +17,7 @@ struct interfaces_t {
 	c_panel *m_panel = nullptr;
 	c_game_event_mgr *m_event_mgr = nullptr;
 	c_game_type *m_game_type = nullptr;
+	c_debug_overlay *m_debug_overlay = nullptr;
 	c_move_helper *m_move_helper = nullptr;
 	c_prediction *m_prediction = nullptr;
 	c_game_movement *m_game_movement = nullptr;
