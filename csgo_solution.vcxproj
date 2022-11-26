@@ -26,6 +26,7 @@
     <ClInclude Include="crc32.h" />
     <ClInclude Include="debug_overlay.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="entity.h" />
     <ClInclude Include="game_type.h" />
     <ClInclude Include="penetration.h" />
     <ClInclude Include="player.h" />

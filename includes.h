@@ -31,6 +31,7 @@
 #include "inputpred.h"
 #include "notify.h"
 #include "netvars.h"
+#include "entity.h"
 #include "player.h"
 #include "weapon.h"
 #include "globals.h"
