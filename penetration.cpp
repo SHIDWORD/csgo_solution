@@ -363,10 +363,6 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 }
 
 float penetration_t::scale_dmg ( player_t *player, float damage, float armor_ratio, int hitgroup, bool is_zeus ) {
-	/* 
-		TraceAttack: server.dll - 55 8B EC 83 E4 F8 81 EC ? ? ? ? 56 8B 75 08 57 8B F9 C6 44 24 ? ? C6 44 
-	*/
-
 	auto weapon = player->weapon ( );
 	
 	if ( !weapon )
