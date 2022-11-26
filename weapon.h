@@ -19,7 +19,7 @@ enum weapon_type_t : int {
 
 class weapon_info_t {
 public:
-	PAD( 20 ); //0x0000
+	PAD ( 20 ); //0x0000
 	int m_max_clip; //0x0014
 	int m_max_clip_alt; //0x0018
 	int m_default_clip; //0x001C
@@ -28,7 +28,7 @@ public:
 	char *m_hud_name; //0x0088
 	char *m_weapon_name; //0x008C
 	PAD ( 56 ); //0x0090
-	weapon_type_t m_weapon_type; //0x00C8
+	int m_weapon_type; //0x00C8
 	PAD ( 12 ); //0x00CC
 	char *m_anim_prefix; //0x00D8
 	float m_cycle_time; //0x00DC
@@ -36,7 +36,7 @@ public:
 	PAD ( 8 ); //0x00E4
 	int m_slot; //0x00EC
 	int m_damage; //0x00F0
-	PAD ( 4 ); //0x00F4
+	float m_headshot_multiplier; //0x00F4
 	float m_armor_ratio; //0x00F8
 	int m_bullets; //0x00FC
 	float m_penetration; //0x0100

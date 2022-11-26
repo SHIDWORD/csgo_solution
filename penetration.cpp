@@ -104,8 +104,8 @@ bool penetration_t::simulate_fire_bullet ( const weapon_info_t *data, vec_t src,
 		if ( current_distance > 3000.f || penetration_modifier < 0.1f )
 			break;
 
-		if ( enter_trace.m_hit_entity && enter_trace.m_hit_entity == ent ) {
-			fire_info.m_out_damage = scale_dmg ( ent, fire_info.m_damage, data->m_armor_ratio, enter_trace.m_hitgroup, is_zeus );
+		if ( enter_trace.m_hit_entity && enter_trace.m_hit_entity == ent && ( enter_trace.m_hitgroup >= 0 && enter_trace.m_hitgroup <= 7 ) ) {
+			fire_info.m_out_damage = scale_dmg ( ent, fire_info.m_damage, data->m_armor_ratio, enter_trace.m_hitgroup, is_zeus ); /* return our damage if our ray is visible. */
 			fire_info.m_damage = fire_info.m_out_damage;
 			
 			return true;
@@ -363,6 +363,15 @@ bool penetration_t::handle_bullet_penetration ( player_t *ent, float &penetratio
 }
 
 float penetration_t::scale_dmg ( player_t *player, float damage, float armor_ratio, int hitgroup, bool is_zeus ) {
+	/* 
+		TraceAttack: server.dll - 55 8B EC 83 E4 F8 81 EC ? ? ? ? 56 8B 75 08 57 8B F9 C6 44 24 ? ? C6 44 
+	*/
+
+	auto weapon = player->weapon ( );
+	
+	if ( !weapon )
+		return 0.f;
+
 	static cvar_t *mp_damage_scale_ct_body = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_ct_body" ) );
 	static cvar_t *mp_damage_scale_t_body = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_t_body" ) );
 	static cvar_t *mp_damage_scale_ct_head = interfaces.m_cvar->find_var ( HASH ( "mp_damage_scale_ct_head" ) );
@@ -400,10 +409,9 @@ float penetration_t::scale_dmg ( player_t *player, float damage, float armor_rat
 		head_damage_scale *= 0.5f;
 
 	if ( !is_zeus )
-		/* TODO: scale upon weapon headshot multiplier. */
 		switch ( hitgroup ) {
 		case hitgroup_t::hitgroup_head:
-			damage *= 4.0f * head_damage_scale;
+			damage *= weapon->data ( ) ? weapon->data ( )->m_headshot_multiplier : ( 4.0f * head_damage_scale );
 			break;
 		case hitgroup_t::hitgroup_chest:
 			damage *= 1.0f * scale_body_damage;
