@@ -5,13 +5,15 @@ void __stdcall cheat_thread ( ) {
 	while ( !LI_FN ( GetModuleHandleA )( x_ ( "serverbrowser.dll" ) ) )
 		std::this_thread::sleep_for ( std::chrono::milliseconds ( 400 ) );
 
-	/* init our hack. */
-	interfaces.init ( );
+	/* init interfaces. */
+	interfaces::init ( );
+
+	/* init others. */
 	netvars.init ( );
 	render.init ( );
 	hooks.init ( );
 
-	/* notify our user. */
+	/* notify our user that we successfully injected. */
 	notify.push_log ( x_ ( "Injected successfully.\n" ), { 255, 255, 255 } );
 
 	/* unload our hack. */

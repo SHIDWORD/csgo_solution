@@ -3,10 +3,10 @@
 notify_t notify { };
 
 void notify_t::push_log ( const std::string &msg, color_t col ) {
-	interfaces.m_cvar->console_color_printf ( { 202, 153, 255 }, x_ ( "[ hack ] " ) );
-	interfaces.m_cvar->console_color_printf ( col, msg.data ( ) );
+	interfaces::m_cvar->console_color_printf ( { 202, 153, 255 }, x_ ( "[ hack ] " ) );
+	interfaces::m_cvar->console_color_printf ( col, msg.data ( ) );
 
-	m_notify_text.push_front ( { msg, col, interfaces.m_globals->m_curtime, 255 } );
+	m_notify_text.push_front ( { msg, col, interfaces::m_globals->m_curtime, 255 } );
 }
 
 #define SPEED_FREQ ( 255 / 0.5f )
@@ -18,10 +18,10 @@ void notify_t::paint ( ) {
 	for ( int i { 0 }; i < m_notify_text.size ( ); i++ ) {
 		auto &notify = m_notify_text [ i ];
 
-		if ( interfaces.m_globals->m_curtime - notify.m_time > 5.f )
-			notify.m_alpha -= SPEED_FREQ * interfaces.m_globals->m_frametime;
+		if ( interfaces::m_globals->m_curtime - notify.m_time > 5.f )
+			notify.m_alpha -= SPEED_FREQ * interfaces::m_globals->m_frametime;
 
-		if ( ( notify.m_alpha < 0.f && ( interfaces.m_globals->m_curtime - notify.m_time ) > 5.f ) || m_notify_text.size ( ) > 11 ) {
+		if ( ( notify.m_alpha < 0.f && ( interfaces::m_globals->m_curtime - notify.m_time ) > 5.f ) || m_notify_text.size ( ) > 11 ) {
 			m_notify_text.pop_back ( );
 			continue;
 		}

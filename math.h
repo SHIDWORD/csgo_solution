@@ -1,7 +1,7 @@
 #pragma once
 
-struct math_t {
-	float pi = 3.14159265358979f;
+namespace math {
+	constexpr float pi = 3.14159265358979f;
 
 	__forceinline float rad2deg ( float rad ) {
 		float res = rad * ( 180.0f / pi );
@@ -24,5 +24,3 @@ struct math_t {
 	float normalize ( float ang );
 	vec_t calc_angle ( vec_t src, vec_t dst );
 };
-
-extern math_t math;

@@ -3,7 +3,7 @@
 netvars_t netvars { };
 
 bool netvars_t::init ( ) {
-	auto client_class = interfaces.m_client->get_all_classes ( );
+	auto client_class = interfaces::m_client->get_all_classes ( );
 
 	if ( !client_class )
 		return false;

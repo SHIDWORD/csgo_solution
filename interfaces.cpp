@@ -1,7 +1,5 @@
 #include "includes.h"
 
-interfaces_t interfaces { };
-
 template < typename t >
 __forceinline t create_interface ( const char *module_name, const char *name ) {
 	using create_interface_fn = std::uintptr_t *( __cdecl * ) ( const char *, int * );
@@ -10,7 +8,7 @@ __forceinline t create_interface ( const char *module_name, const char *name ) {
 	return reinterpret_cast< t >( create_interface_call ( name, nullptr ) );
 }
 
-bool interfaces_t::init ( ) {
+bool interfaces::init ( ) {
 	m_engine = create_interface< c_engine * > ( x_ ( "engine.dll" ), x_ ( "VEngineClient014" ) );
 	m_surface = create_interface< c_surface * > ( x_ ( "vguimatsurface.dll" ), x_ ( "VGUI_Surface031" ) );
 	m_localize = create_interface< c_localize * > ( x_ ( "localize.dll" ), x_ ( "Localize_001" ) );

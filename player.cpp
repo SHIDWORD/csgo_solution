@@ -11,12 +11,12 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 	if ( !e )
 		return;
 
-	const auto ground_ent = interfaces.m_entlist->get_by_handle< player_t * > ( e->handle ( ) );
+	const auto ground_ent = interfaces::m_entlist->get_by_handle< player_t * > ( e->handle ( ) );
 
 	if ( !state->m_landing || state->m_duck_amount == 0.0f || ground_ent )
 		return;
 
-	interfaces.m_mdl_cache->begin_lock ( );
+	interfaces::m_mdl_cache->begin_lock ( );
 
 	const auto head_bone = e->lookup_bone ( x_ ( "head_0" ) );
 
@@ -37,16 +37,16 @@ void player_t::modify_eye_position ( animstate_t *state, vec_t *input_eye_pos ) 
 		}
 	}
 
-	interfaces.m_mdl_cache->end_lock ( );
+	interfaces::m_mdl_cache->end_lock ( );
 }
 
 bool player_t::is_enemy ( player_t *other ) {
-	static cvar_t* mp_teammates_are_enemies = interfaces.m_cvar->find_var ( HASH ( "mp_teammates_are_enemies" ) );
+	static cvar_t* mp_teammates_are_enemies = interfaces::m_cvar->find_var ( HASH ( "mp_teammates_are_enemies" ) );
 
 	if ( !this || !other || this == other )
 		return false;
 
-	if ( interfaces.m_game_type->get_game_type ( ) == game_type_t::danger_zone ) {
+	if ( interfaces::m_game_type->get_game_type ( ) == game_type_t::danger_zone ) {
 		const auto my_team = survival_team ( );
 
 		if ( my_team == -1 )
@@ -142,5 +142,5 @@ int player_t::lookup_bone ( const char *name ) {
 }
 
 weapon_t *player_t::weapon ( ) {
-	return interfaces.m_entlist->get_by_handle< weapon_t * > ( weapon_handle ( ) );
+	return interfaces::m_entlist->get_by_handle< weapon_t * > ( weapon_handle ( ) );
 }

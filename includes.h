@@ -33,6 +33,7 @@
 #include "netvars.h"
 #include "entity.h"
 #include "player.h"
+#include "hack.h"
 #include "weapon.h"
 #include "globals.h"
 #include "render.h"

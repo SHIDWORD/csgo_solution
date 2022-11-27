@@ -28,7 +28,7 @@ struct cvar_value_t {
 using change_callback_t = void( * )( cvar_t *var, const char *old_value, float float_old_value );
 
 class cvar_t {
-	enum indices_t : uintptr_t {
+	enum indices_t : std::uintptr_t {
 		_get_name = 5,
 		_set_int = 16,
 		_set_float = 15,

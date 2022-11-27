@@ -249,7 +249,7 @@ public:
 class trace_t : public base_trace_t {
 public:
     __forceinline bool did_hit_world ( ) const {
-        return m_hit_entity == interfaces.m_entlist->get< void * > ( 0 );
+        return m_hit_entity == interfaces::m_entlist->get< void * > ( 0 );
     }
 
     __forceinline bool did_hit_non_world_ent ( ) const {

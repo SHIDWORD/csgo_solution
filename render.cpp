@@ -3,7 +3,7 @@
 render_t render { };
 
 void render_t::init ( ) {
-	interfaces.m_engine->get_screen_size ( m_width, m_height );
+	interfaces::m_engine->get_screen_size ( m_width, m_height );
 
 	/* init font map */
 	fonts [ fonts_t::default_font ] = font_data_t ( x_ ( "Verdana" ), 12, 400, 0, font_flags_t::font_flag_anti_aliasing | font_flags_t::font_flag_drop_shadow );
@@ -14,26 +14,26 @@ void render_t::init ( ) {
 	for ( auto &font : fonts ) {
 		auto &font_data = font.second;
 
-		font_data.m_data = interfaces.m_surface->create_font ( );
+		font_data.m_data = interfaces::m_surface->create_font ( );
 
 		if ( font_data.m_data != 0 )
-			interfaces.m_surface->set_font_glyph_set ( font_data.m_data, font_data.m_name, font_data.m_height, font_data.m_weight, font_data.m_blur, 0, font_data.m_flags );
+			interfaces::m_surface->set_font_glyph_set ( font_data.m_data, font_data.m_name, font_data.m_height, font_data.m_weight, font_data.m_blur, 0, font_data.m_flags );
 	}
 }
 
 void render_t::filled_rect ( int x, int y, int w, int h, color_t color ) {
-	interfaces.m_surface->draw_set_color ( color );
-	interfaces.m_surface->draw_filled_rect ( x, y, x + w, y + h );
+	interfaces::m_surface->draw_set_color ( color );
+	interfaces::m_surface->draw_filled_rect ( x, y, x + w, y + h );
 }
 
 void render_t::outlined_rect ( int x, int y, int w, int h, color_t color ) {
-	interfaces.m_surface->draw_set_color ( color );
-	interfaces.m_surface->draw_outlined_rect ( x, y, x + w, y + h );
+	interfaces::m_surface->draw_set_color ( color );
+	interfaces::m_surface->draw_outlined_rect ( x, y, x + w, y + h );
 }
 
 void render_t::line ( int x0, int y0, int x1, int y1, color_t color ) {
-	interfaces.m_surface->draw_set_color ( color );
-	interfaces.m_surface->draw_line ( x0, y0, x1, y1 );
+	interfaces::m_surface->draw_set_color ( color );
+	interfaces::m_surface->draw_line ( x0, y0, x1, y1 );
 }
 
 void render_t::string ( unsigned long font_in, int x, int y, color_t color, const char *format, ... ) {
@@ -47,17 +47,17 @@ void render_t::string ( unsigned long font_in, int x, int y, color_t color, cons
 	wchar_t wbuffer [ 1024 ] = { 0 };
 	MultiByteToWideChar ( CP_UTF8, 0, buffer, -1, wbuffer, sizeof ( wbuffer ) );
 
-	interfaces.m_surface->draw_set_text_font ( font_in );
-	interfaces.m_surface->draw_set_text_color ( color );
-	interfaces.m_surface->draw_set_text_pos ( x, y );
-	interfaces.m_surface->draw_print_text ( wbuffer, wcslen ( wbuffer ) );
+	interfaces::m_surface->draw_set_text_font ( font_in );
+	interfaces::m_surface->draw_set_text_color ( color );
+	interfaces::m_surface->draw_set_text_pos ( x, y );
+	interfaces::m_surface->draw_print_text ( wbuffer, wcslen ( wbuffer ) );
 }
 
 void render_t::string ( unsigned long font_in, int x, int y, color_t color, wchar_t *data ) {
-	interfaces.m_surface->draw_set_text_font ( font_in );
-	interfaces.m_surface->draw_set_text_color ( color );
-	interfaces.m_surface->draw_set_text_pos ( x, y );
-	interfaces.m_surface->draw_print_text ( data, wcslen ( data ) );
+	interfaces::m_surface->draw_set_text_font ( font_in );
+	interfaces::m_surface->draw_set_text_color ( color );
+	interfaces::m_surface->draw_set_text_pos ( x, y );
+	interfaces::m_surface->draw_print_text ( data, wcslen ( data ) );
 }
 
 bool render_t::world_to_screen ( const vec_t &origin, vec_t &screen ) {
@@ -96,14 +96,14 @@ vec2_t render_t::get_text_size ( const unsigned long &font, const char *fmt, ...
 	MultiByteToWideChar ( CP_UTF8, 0, buffer, -1, wbuffer, sizeof ( wbuffer ) );
 
 	int width, height;
-	interfaces.m_surface->get_text_size ( font, wbuffer, width, height );
+	interfaces::m_surface->get_text_size ( font, wbuffer, width, height );
 
 	return { static_cast< float >( width ), static_cast< float >( height ) };
 }
 
 vec2_t render_t::get_text_size ( const unsigned long &font, wchar_t *data ) {
 	int width, height;
-	interfaces.m_surface->get_text_size ( font, data, width, height );
+	interfaces::m_surface->get_text_size ( font, data, width, height );
 
 	return { static_cast< float >( width ), static_cast< float >( height ) };
 }

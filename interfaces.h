@@ -2,27 +2,25 @@
 
 class c_engine_trace;
 
-struct interfaces_t {
+namespace interfaces {
+	inline c_engine *m_engine = nullptr;
+	inline c_client *m_client = nullptr;
+	inline c_input *m_input = nullptr;
+	inline c_entlist *m_entlist = nullptr;
+	inline c_surface *m_surface = nullptr;
+	inline c_convar *m_cvar = nullptr;
+	inline c_global_vars *m_globals = nullptr;
+	inline c_localize *m_localize = nullptr;
+	inline c_model_cache *m_mdl_cache = nullptr;
+	inline c_panel *m_panel = nullptr;
+	inline c_game_event_mgr *m_event_mgr = nullptr;
+	inline c_game_type *m_game_type = nullptr;
+	inline c_debug_overlay *m_debug_overlay = nullptr;
+	inline c_move_helper *m_move_helper = nullptr;
+	inline c_prediction *m_prediction = nullptr;
+	inline c_game_movement *m_game_movement = nullptr;
+	inline c_phys *m_phys_props = nullptr;
+	inline c_engine_trace *m_trace = nullptr;
+	
 	bool init ( );
-
-	c_engine *m_engine = nullptr;
-	c_client *m_client = nullptr;
-	c_input *m_input = nullptr;
-	c_entlist *m_entlist = nullptr;
-	c_surface *m_surface = nullptr;
-	c_convar *m_cvar = nullptr;
-	c_global_vars *m_globals = nullptr;
-	c_localize *m_localize = nullptr;
-	c_model_cache *m_mdl_cache = nullptr;
-	c_panel *m_panel = nullptr;
-	c_game_event_mgr *m_event_mgr = nullptr;
-	c_game_type *m_game_type = nullptr;
-	c_debug_overlay *m_debug_overlay = nullptr;
-	c_move_helper *m_move_helper = nullptr;
-	c_prediction *m_prediction = nullptr;
-	c_game_movement *m_game_movement = nullptr;
-	c_phys *m_phys_props = nullptr;
-	c_engine_trace *m_trace = nullptr;
-};
-
-extern interfaces_t interfaces;
+}

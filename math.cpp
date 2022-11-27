@@ -1,18 +1,16 @@
 #include "includes.h"
 
-math_t math { };
-
-void math_t::vec_transform ( const float *in1, const matrix3x4_t &in2, float *out ) {
+void math::vec_transform ( const float *in1, const matrix3x4_t &in2, float *out ) {
 	out [ 0 ] = dot_product ( in1, in2 [ 0 ] ) + in2 [ 0 ][ 3 ];
 	out [ 1 ] = dot_product ( in1, in2 [ 1 ] ) + in2 [ 1 ][ 3 ];
 	out [ 2 ] = dot_product ( in1, in2 [ 2 ] ) + in2 [ 2 ][ 3 ];
 }
 
-void math_t::vec_transform ( const vec_t &in1, const matrix3x4_t &in2, vec_t &out ) {
+void math::vec_transform ( const vec_t &in1, const matrix3x4_t &in2, vec_t &out ) {
 	vec_transform ( &in1.x, in2, &out.x );
 }
 
-float math_t::distance_to_ray ( const vec_t &pos, const vec_t &ray_start, const vec_t &ray_end, float *along, vec_t *point_on_ray ) {
+float math::distance_to_ray ( const vec_t &pos, const vec_t &ray_start, const vec_t &ray_end, float *along, vec_t *point_on_ray ) {
 	const vec_t to = ( pos - ray_start );
 	vec_t dir = ( ray_end - ray_start );
 
@@ -34,7 +32,7 @@ float math_t::distance_to_ray ( const vec_t &pos, const vec_t &ray_start, const 
 	return range;
 }
 
-vec_t math_t::angle_vector ( vec_t angle ) {
+vec_t math::angle_vector ( vec_t angle ) {
 	vec_t ret;
 
 	float sp, sy, cp, cy;
@@ -49,16 +47,16 @@ vec_t math_t::angle_vector ( vec_t angle ) {
 	return ret;
 }
 
-void math_t::sin_cos ( float radians, float *sin, float *cos ) {
+void math::sin_cos ( float radians, float *sin, float *cos ) {
 	*sin = std::sin ( radians );
 	*cos = std::cos ( radians );
 }
 
-float math_t::dot_product ( const vec_t &a, const vec_t &b ) {
+float math::dot_product ( const vec_t &a, const vec_t &b ) {
 	return { a.x * b.x + a.y * b.y + a.z * b.z };
 }
 
-vec_t math_t::vector_angle ( vec_t vec ) {
+vec_t math::vector_angle ( vec_t vec ) {
 	constexpr float pi = 3.14159265358979323846;
 	
 	return vec_t (
@@ -68,7 +66,7 @@ vec_t math_t::vector_angle ( vec_t vec ) {
 	);
 }
 
-void math_t::clamp ( vec_t &ang ) {
+void math::clamp ( vec_t &ang ) {
 	auto flt_valid = [ ] ( float val ) {
 		return std::isfinite ( val ) && !std::isnan ( val );
 	};
@@ -82,7 +80,7 @@ void math_t::clamp ( vec_t &ang ) {
 	ang.z = 0.0f;
 }
 
-float math_t::normalize ( float ang ) {
+float math::normalize ( float ang ) {
 	if ( isnan ( ang ) || isinf ( ang ) )
 		ang = 0.0f;
 
@@ -95,7 +93,7 @@ float math_t::normalize ( float ang ) {
 	return ang;
 }
 
-vec_t math_t::calc_angle ( vec_t src, vec_t dst ) {
+vec_t math::calc_angle ( vec_t src, vec_t dst ) {
 	auto ret = vector_angle ( dst - src );
 
 	clamp ( ret );
