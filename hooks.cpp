@@ -35,6 +35,19 @@ bool hooks_t::init ( ) {
 	return true;
 }
 
+void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
+	const auto engine_vgui = reinterpret_cast< c_engine_vgui * >( ecx );
+
+	hooks.m_paint.get_old_method< decltype ( &paint ) > ( )( ecx, edx, mode );
+
+	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
+		interfaces::m_surface->paint ( [ & ] {
+			visuals.paint ( );
+			notify.paint ( );
+		} );
+	}
+}
+
 LRESULT __stdcall hooks_t::wnd_proc ( HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param ) {
 	return ::CallWindowProcA ( hooks.m_old_wndproc, hwnd, msg, w_param, l_param );
 }
@@ -49,12 +62,10 @@ void __stdcall hooks_t::create_move ( int seq_num, float input_sample_frame_time
 		return;
 
 	g.m_ucmd = ucmd;
-
-	prediction.predict ( ucmd ); {
-		/* run prediction dependent code here. */
-	} prediction.restore ( ucmd );
-
-	hack.on_tick ( ucmd, send_packet );
+	
+	prediction.predict ( ucmd, [ & ] {
+		/* prediction dependent code goes here. */
+	} );
 
 	verified->m_cmd = *ucmd;
 	verified->m_crc = ucmd->get_checksum ( );
@@ -85,18 +96,6 @@ void __fastcall hooks_t::paint_traverse ( void *ecx, void *edx, unsigned int pan
 
 	if ( panel_hash == HASH ( "FocusOverlayPanel" ) ) {
 		/* store draw data here. */
-	}
-}
-
-void __fastcall hooks_t::paint ( void *ecx, void *edx, paint_modes_t mode ) {
-	const auto engine_vgui = reinterpret_cast< c_engine_vgui * >( ecx );
-
-	hooks.m_paint.get_old_method< decltype ( &paint ) > ( )( ecx, edx, mode );
-
-	if ( engine_vgui->m_static_transition_panel && ( mode & paint_modes_t::paint_uipanels ) ) {
-		interfaces::m_surface->paint ( [ & ] {
-			hack.on_paint ( );
-		} );
 	}
 }
 

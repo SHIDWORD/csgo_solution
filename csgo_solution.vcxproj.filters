@@ -171,9 +171,6 @@
     <ClInclude Include="entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="entry.cpp">
@@ -228,9 +225,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="penetration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

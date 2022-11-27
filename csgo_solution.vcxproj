@@ -28,7 +28,6 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game_type.h" />
-    <ClInclude Include="hack.h" />
     <ClInclude Include="penetration.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="entlist.h" />
@@ -75,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffer.c" />
-    <ClCompile Include="hack.cpp" />
     <ClCompile Include="penetration.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="entry.cpp" />

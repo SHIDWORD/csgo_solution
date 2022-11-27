@@ -1,7 +1,8 @@
 #pragma once
 
 struct inputpred_t {
-	void predict ( ucmd_t *ucmd );
+	void predict ( ucmd_t *ucmd, const std::function<void ( )> &fn );
+	void begin ( ucmd_t *ucmd );
 	void restore ( ucmd_t *ucmd );
 
 	uintptr_t m_prediction_player;

@@ -25,7 +25,13 @@ void post_think ( player_t *ent ) {
 	interfaces::m_mdl_cache->end_lock ( );
 }
 
-void inputpred_t::predict ( ucmd_t *ucmd ) {
+void inputpred_t::predict ( ucmd_t* ucmd, const std::function < void ( ) > &fn ) {
+	prediction.begin ( ucmd );
+	fn ( );
+	prediction.restore ( ucmd );
+}
+
+void inputpred_t::begin ( ucmd_t *ucmd ) {
 	if ( !g.m_local || !ucmd || !interfaces::m_move_helper )
 		return;
 
