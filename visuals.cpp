@@ -3,14 +3,29 @@
 visuals_t visuals { };
 
 void visuals_t::paint ( ) {
+	if ( !interfaces::m_engine->is_in_game ( ) )
+		return;
 
+	for ( int i { 1 }; i <= interfaces::m_globals->m_max_clients; i++ ) {
+		auto entity = interfaces::m_entlist->get< player_t * > ( i );
+
+		if ( !entity || entity->dormant ( ) || !entity->alive ( ) || entity->team ( ) == g.m_local->team ( ) )
+			continue;
+
+		box_t box;
+
+		if ( !get_box_bounds ( entity, box ) )
+			continue;
+
+		render.outlined_rect ( box.x, box.y, box.w, box.h, { 255, 255, 255 } );
+	}
 }
 
 bool visuals_t::get_box_bounds ( player_t *ent, box_t &box ) {
+	auto origin = ent->origin ( );
+
 	vec_t flb, brt, blb, frt, frb, brb, blt, flt;
 	float left, top, right, bottom;
-
-	auto origin = ent->origin ( );
 
 	auto min = ent->mins ( ) + origin;
 	auto max = ent->maxs ( ) + origin;
